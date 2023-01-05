@@ -31,16 +31,22 @@ type SapApiItemsData struct {
 		Barcode  string `json:"Barcode"`
 		UoMEntry int    `json:"UoMEntry"`
 	} `json:"ItemBarCodeCollection"`
-	ItemCode                      string `json:"ItemCode"`
-	ItemNameDA                    string `json:"ItemName"`
-	FunctionalName                string `json:"U_BOYX_Varebeskrivelse"` // TODO: Create a new field for this eventually
+	ItemCode   string `json:"ItemCode"`
+	ItemNameDA string `json:"ItemName"`
+
+	FunctionalName    string `json:"U_BOYX_Varebeskrivelse"`
+	FunctionalNameCCF string `json:"U_CCF_FunctionalName"`
+
 	ShelfLifeFromArrivalInDays    string `json:"U_BOYX_Holdbarhed_Kunde"`
 	ShelfLifeFromProductionInDays int    `json:"U_BOYX_Holdbarhed"`
 	AvailabilityDateTime          string `json:"U_CCF_LaunchDate"`
 	EffectiveDateTime             string `json:"U_CCF_GS1_Ajour"`
 	BrandName                     string `json:"U_BOYX_varemrk"`
 
-	// TODO: Add "Økologimærke felt i SAP " https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=OrganicTradeItemCodeList.da
+	SyncGS1                  string `json:"U_CCF_Sync_GS1"`       // TODO: Ved ikke om dette skal hives ud eller blot bruges som filter
+	OrganicTradeItemCodeList int    `json:"U_CCF_OrganicCode"`    // https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=OrganicTradeItemCodeList.da
+	ManufacturerGLN          string `json:"CCF_Manufacturer_GLN"` // "D8242" https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/field.xsp?documentId=516f5dd5e012c0f7c12589090055223c&action=openDocument
+	BrandOwnerGLN            string `json:"CCF_BrandOwner_GLN"`   // "D8346" https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/field.xsp?documentId=d23d8eda0e728e26c1258909005522e1&action=openDocument
 
 	// Logistical Data // TODO: Use the actual UOM module in SAP for these instead of the homemade one from Bitpeople.
 	//ItemUnitOfMeasurementCollection []ItemUnitOfMeasurement `json:"ItemUnitOfMeasurementCollection"`
