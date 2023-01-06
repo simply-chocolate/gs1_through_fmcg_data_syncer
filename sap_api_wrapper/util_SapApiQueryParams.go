@@ -16,6 +16,8 @@ type SapApiQueryParams struct {
 	Skip int
 	// The limit to use for pagination
 	Top int
+	// The ItemCode for the mixCase
+	FatherItemCode string
 }
 
 func (p *SapApiQueryParams) AsReqParams() map[string]string {
@@ -34,6 +36,9 @@ func (p *SapApiQueryParams) AsReqParams() map[string]string {
 	}
 	if p.Top != 0 {
 		queryParams["$top"] = strconv.Itoa(p.Top)
+	}
+	if p.FatherItemCode != "" {
+		queryParams["fatherItemCode"] = p.FatherItemCode
 	}
 
 	return queryParams

@@ -26,36 +26,46 @@ type ItemUnitOfMeasurement struct {
 */
 
 type SapApiItemsData struct {
+	TypeOfProduct string `json:"U_CCF_Type"`     // If this is Equal to // TODO: ADd type "Campaign Display" and make sure bars with 20 pr. colli is grouped like that
+	UoMGroupEntry int    `json:"UoMGroupEntry"`  // If this is Equal to 42 then it's a Campaign Display
+	SyncGS1       string `json:"U_CCF_Sync_GS1"` // TODO: Ved ikke om dette skal hives ud eller blot bruges som filter
 	// General Information
 	ItemBarCodeCollection []struct {
 		Barcode  string `json:"Barcode"`
 		UoMEntry int    `json:"UoMEntry"`
 	} `json:"ItemBarCodeCollection"`
-	ItemCode   string `json:"ItemCode"`
-	ItemNameDA string `json:"ItemName"`
-
-	FunctionalName    string `json:"U_BOYX_Varebeskrivelse"`
-	FunctionalNameCCF string `json:"U_CCF_FunctionalName"`
-
+	ItemCode                      string `json:"ItemCode"`
+	ItemNameDA                    string `json:"ItemName"`
+	FunctionalName                string `json:"U_BOYX_Varebeskrivelse"`
+	FunctionalNameCCF             string `json:"U_CCF_FunctionalName"`
 	ShelfLifeFromArrivalInDays    string `json:"U_BOYX_Holdbarhed_Kunde"`
 	ShelfLifeFromProductionInDays int    `json:"U_BOYX_Holdbarhed"`
 	AvailabilityDateTime          string `json:"U_CCF_LaunchDate"`
 	EffectiveDateTime             string `json:"U_CCF_GS1_Ajour"`
 	BrandName                     string `json:"U_BOYX_varemrk"`
-
-	SyncGS1                  string `json:"U_CCF_Sync_GS1"`       // TODO: Ved ikke om dette skal hives ud eller blot bruges som filter
-	OrganicTradeItemCodeList int    `json:"U_CCF_OrganicCode"`    // https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=OrganicTradeItemCodeList.da
-	ManufacturerGLN          string `json:"CCF_Manufacturer_GLN"` // "D8242" https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/field.xsp?documentId=516f5dd5e012c0f7c12589090055223c&action=openDocument
-	BrandOwnerGLN            string `json:"CCF_BrandOwner_GLN"`   // "D8346" https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/field.xsp?documentId=d23d8eda0e728e26c1258909005522e1&action=openDocument
+	OrganicTradeItemCodeList      int    `json:"U_CCF_OrganicCode"`    // https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=OrganicTradeItemCodeList.da
+	ManufacturerGLN               string `json:"CCF_Manufacturer_GLN"` // "D8242" https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/field.xsp?documentId=516f5dd5e012c0f7c12589090055223c&action=openDocument
+	BrandOwnerGLN                 string `json:"CCF_BrandOwner_GLN"`   // "D8346" https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/field.xsp?documentId=d23d8eda0e728e26c1258909005522e1&action=openDocument
 
 	// Logistical Data // TODO: Use the actual UOM module in SAP for these instead of the homemade one from Bitpeople.
 	//ItemUnitOfMeasurementCollection []ItemUnitOfMeasurement `json:"ItemUnitOfMeasurementCollection"`
 	// We want to use the above instead, but the data is not in SAP yet, so we start with this.
+	// PackagingType       string `json:"U_CCF_PackagingType"` //TODO: Add this field in SAP
+	// BaseUnit
 	BaseUnitWidth       int `json:"U_BOYX_Bredde_e"`
 	BaseUnitHeight      int `json:"U_BOYX_hoojde_e"`
 	BaseUnitDepth       int `json:"U_BOYX_dybde_e"`
 	BaseUnitNetWeight   int `json:"U_BOYX_netto_e"`
 	BaseUnitGrossWeight int `json:"U_BOYX_brutto_e"`
+	// Case
+	CaseWidth       int `json:"U_BOYX_bredde_k"`
+	CaseHeight      int `json:"U_BOYX_hoojde_k"`
+	CaseDepth       int `json:"U_BOYX_dybde_k"`
+	CaseNetWeight   int `json:"U_BOYX_netto_k"`
+	CaseGrossWeight int `json:"U_BOYX_brutto_k"`
+	UnitsPerCase    int `json:"U_BOYX_antal_k"`
+
+	// TODO: Pallet
 
 	// Allergen containment information
 	ContainmentLevelGluten    string `json:"U_BOYX_gluten"`
@@ -91,6 +101,7 @@ type SapApiItemsData struct {
 	NutritionalSugarValue         string `json:"U_BOYX_sukkerarter"`
 	NutritionalProteinValue       string `json:"U_BOYX_Protein"`
 	NutritionalSaltValue          string `json:"U_BOYX_salt"`
+	ListOfIngredientsDA           string `json:"U_BOYX_varedel"`
 }
 
 type SapApiGetItemsDataReturn struct {

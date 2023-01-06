@@ -75,5 +75,26 @@ func MapNutritionalInformation(baseItemData fmcg_api_wrapper.FmcgProductBodyBase
 	baseItemData.NutritionalSaltValue = itemData.NutritionalSaltValue
 	baseItemData.NutritionalSaltUOM = "GRM"
 
+	baseItemData.ListOfIngredientsLanguageCodeDA = "da"
+	baseItemData.ListOfIngredientsDA = itemData.ListOfIngredientsDA
+
+	return baseItemData
+}
+
+func MapLogisticalInformation(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, itemData sap_api_wrapper.SapApiItemsData) fmcg_api_wrapper.FmcgProductBodyBaseItem {
+	baseItemData.NetContent = itemData.BaseUnitNetWeight
+	baseItemData.NetContentUoM = "GRM"
+	baseItemData.Height = itemData.BaseUnitHeight
+	baseItemData.HeightUOM = "MMT"
+	baseItemData.Width = itemData.BaseUnitWidth
+	baseItemData.WidthUOM = "MMT"
+	baseItemData.Depth = itemData.BaseUnitDepth
+	baseItemData.DepthUOM = "MMT"
+	baseItemData.NetWeight = itemData.BaseUnitNetWeight
+	baseItemData.NetWeightUoM = "GRM"
+	baseItemData.GrossWeight = itemData.BaseUnitGrossWeight
+	baseItemData.GrossWeightUoM = "GRM"
+	baseItemData.PackagingType = "BX" // TODO: Add fields to SAP
+
 	return baseItemData
 }

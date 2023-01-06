@@ -9,7 +9,8 @@ type FmcgProductBodyBaseItem struct {
 	DataCarrierTypeCode                 string `json:"D8208"` // [EAN_13, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=DataCarrierTypeCodeList.da
 	BrandName                           string `json:"D8211"`
 	CountryOfOrigin                     string `json:"D8219"`   // [208, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=CountryCodeList.da
-	ManufacturerGLN                     string `json:"D8242_1"` // TODO: Skal vi lave et felt til dette, i forhold til de produkter vi outsourcer? Spørg FMCG
+	ManufacturerGLN                     string `json:"D8242_1"` //
+	BrandOwnerGLN                       string `json:"D8346"`   //
 	GPCCategoryCode                     string `json:"D8245"`   // 10000045
 	ImportClassificationValue           string `json:"D8253_1"` // Default 18069019 00 for Chocolate //TODO: Spørg FMCG indtil disse to felter
 	ImportClassificationType            string `json:"D8254_1"` // [CUSTOMS_TARIFF_NUMBER, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=ImportClassificationTypeCodeList.da
@@ -42,14 +43,15 @@ type FmcgProductBodyBaseItem struct {
 	NetContent     int    `json:"D8217_1"` //
 	NetContentUoM  string `json:"D8218_1"` // [GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
 	GrossWeight    int    `json:"D8246"`
-	GrossWeightUoM string `json:"D8247"` // [GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
-	Height         int    `json:"D8263"` //
-	HeightUOM      string `json:"D8264"` // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.daWidth
-	Depth          int    `json:"D8265"` //
-	DepthUOM       string `json:"D8266"` // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.daWidth
-	Width          int    `json:"D8267"` //
-	WidthUOM       string `json:"D8268"` // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.daWidth
-	PackaginType   string `json:"D8275"` // [WRP, BX, JR] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=PackageTypeCodeList.da
+	GrossWeightUoM string `json:"D8247"`   // [GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
+	Height         int    `json:"D8263"`   //
+	HeightUOM      string `json:"D8264"`   // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.daWidth
+	Depth          int    `json:"D8265"`   //
+	DepthUOM       string `json:"D8266"`   // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.daWidth
+	Width          int    `json:"D8267"`   //
+	WidthUOM       string `json:"D8268"`   // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.daWidth
+	PackagingType  string `json:"D8275_1"` // [WRP, BX, JR] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=PackageTypeCodeList.da
+
 	//	Allergens
 	//	List of Allergens and their codes - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=AllergenTypeCodeList.da
 	// 	List of Containment types - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=AllergenTypeCodeList.da
@@ -131,29 +133,14 @@ type FmcgProductBodyBaseItem struct {
 	NutritionalSaltValue              string `json:"D8183-UNPREPARED_6"` // SAP FIELD: U_BOYX_salt
 	NutritionalSaltUOM                string `json:"D8184-UNPREPARED_6"` // [GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
 
-	/*
-		//TODO: Enten skal vi tage hele Ingredienslisten på alle 8 sprog ind, ellers skal vi beholde nuværende setup og så smide ingredienslisten på dansk over i denne.
-		// Man kunne også lave noget logik på at spille ingredienslisten på en specifik karatker, så skal vi bare have lavet noget logik på dét.
-		ListOfIngredientsDA             string `json:"D8179_1"` // SAP FIELD: U_BOYX_Ingredienser
-		ListOfIngredientsLanguageCodeDA string `json:"D8180_1"` // da (must be non-capitalized)
-		//
+	// TODO: Lav opsætning i SAP der kan håndtere at vi skriver ingrediensliste ind på forskellige sprog (og får dem ud af SAP også)
+	// Man kunne også lave noget logik på at spille ingredienslisten på en specifik karatker, så skal vi bare have lavet noget logik på dét.
+	ListOfIngredientsDA             string `json:"D8179_1"` // SAP FIELD: U_BOYX_Ingredienser
+	ListOfIngredientsLanguageCodeDA string `json:"D8180_1"` // da (must be non-capitalized)
 
-
-		//	General Information
-
-		StorageInformationLanguageCode1 string `json:"D0352Attr_1"` // Language code of the language the StorageInformation in D0352_1 is written in.
-		StorageInformation              string `json:"D0352_1"`     // Default is "Tørt og ved max 21 grader"
-	*/
-}
-
-type FmcgProductBodyCase struct {
-	GTIN string `json:"D8165"` // Barcode with 0 in front
-
-	IsOrderingUnit                bool   `json:"D8271"` // [TRUE, FALSE] (True for cases and displays, False for BASE_UNIT)
-	UnitOfMeasure                 string `json:"D8276"` // [BASE_UNIT_OR_EACH, CASE, PALLET, DISPLAY_SHIPPER] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=TradeItemUnitDescriptorCodeList.da
-	ShelfLifeFromArrivalInDays    int    `json:"D8283"` // SAP FIELD: U_BOYX_Holdbarhed_Kunde
-	ShelfLifeFromProductionInDays int    `json:"D8284"` // SAP FIELD: U_BOYX_Holdbarhed
-	IsQuantityOrPriceVarying      bool   `json:"D8297"` // [TRUE, FALSE]
+	//	General Information
+	StorageInformationLanguageCode1 string `json:"D0352Attr_1"` // Language code of the language the StorageInformation in D0352_1 is written in.
+	StorageInformation              string `json:"D0352_1"`     // Default is "Tørt og ved max 21 grader"
 
 }
 
@@ -174,7 +161,6 @@ type FmcgProductPostResult struct {
 }
 
 func FMCGApiPostBaseItem(ItemInfo FmcgProductBodyBaseItem, count int) error {
-	fmt.Println(ItemInfo)
 	resp, err := GetFMCGApiBaseClient().
 		//DevMode().
 		R().
