@@ -31,8 +31,8 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 
 	baseItemData.BrandName = itemData.BrandName
 	baseItemData.GPCCategoryCode = "10000045"
-	baseItemData.ImportClassificationValue = "18069019 00"
-	baseItemData.ImportClassificationType = "CUSTOMS_TARIFF_NUMBER"
+	baseItemData.ImportClassificationValue = "18069019"
+	baseItemData.ImportClassificationType = "INTRASTAT"
 	baseItemData.TargetMarketCode = "208"
 	baseItemData.ItemCode = itemData.ItemCode
 
@@ -43,7 +43,7 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 	}
 
 	baseItemData.ItemNameLanguageCodeDA = "da"
-	baseItemData.FunctionalProductNameDA = itemData.FunctionalName
+	baseItemData.FunctionalProductNameDA = itemData.FunctionalProductNameDA
 	baseItemData.FunctionalProductNameLanguageCodeDA = "da"
 	baseItemData.RegulatedProductNameDA = "Chokolade"
 	baseItemData.RegulatedProductNameLanguageCodeDA = "da"
@@ -52,7 +52,7 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 
 	shelfLifeAsInt, err := strconv.Atoi(itemData.ShelfLifeFromArrivalInDays)
 	if err != nil {
-		return fmcg_api_wrapper.FmcgProductBodyBaseItem{}, fmt.Errorf("error converting shelfLife to int. err: %v", err)
+		return fmcg_api_wrapper.FmcgProductBodyBaseItem{}, fmt.Errorf("error converting shelfLife to int on baseItem. GTIN: %v err: %v", baseItemData.GTIN, err)
 	}
 	baseItemData.ShelfLifeFromArrivalInDays = shelfLifeAsInt
 
@@ -87,11 +87,11 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 	baseItemData.PackagingType = "BX" // TODO: Add fields to SAP
 
 	// Dates
-	baseItemData.EffectiveDateTime, err = FormatSapDateToFMCHDate(itemData.EffectiveDateTime)
+	baseItemData.EffectiveDateTime, err = FormatSapDateToFMCGDate(itemData.EffectiveDateTime)
 	if err != nil {
 		return fmcg_api_wrapper.FmcgProductBodyBaseItem{}, fmt.Errorf("error converting effectiveDateTime to FMCG Format. err: %v", err)
 	}
-	baseItemData.StartAvailabilityDateTime, err = FormatSapDateToFMCHDate(itemData.AvailabilityDateTime)
+	baseItemData.StartAvailabilityDateTime, err = FormatSapDateToFMCGDate(itemData.AvailabilityDateTime)
 	if err != nil {
 		return fmcg_api_wrapper.FmcgProductBodyBaseItem{}, fmt.Errorf("error converting AvailabilityDateTime to FMCG Format. err: %v", err)
 	}

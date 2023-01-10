@@ -26,18 +26,21 @@ type ItemUnitOfMeasurement struct {
 */
 
 type SapApiItemsData struct {
-	TypeOfProduct string `json:"U_CCF_Type"`     // If this is Equal to // TODO: ADd type "Campaign Display" and make sure bars with 20 pr. colli is grouped like that
-	UoMGroupEntry int    `json:"UoMGroupEntry"`  // If this is Equal to 42 then it's a Campaign Display
-	SyncGS1       string `json:"U_CCF_Sync_GS1"` // TODO: Ved ikke om dette skal hives ud eller blot bruges som filter
+	// Update Information
+	UpdateDate string `json:"UpdateDate"`
+	UpdateTime string `json:"UpdateTime"`
+
+	TypeOfProduct string `json:"U_CCF_Type"`    // If this is Equal to // TODO: ADd type "Campaign Display" and make sure bars with 20 pr. colli is grouped like that
+	UoMGroupEntry int    `json:"UoMGroupEntry"` // If this is Equal to 42 then it's a Campaign Display
 	// General Information
 	ItemBarCodeCollection []struct {
 		Barcode  string `json:"Barcode"`
 		UoMEntry int    `json:"UoMEntry"`
 	} `json:"ItemBarCodeCollection"`
-	ItemCode                      string `json:"ItemCode"`
-	ItemNameDA                    string `json:"ItemName"`
-	FunctionalName                string `json:"U_BOYX_Varebeskrivelse"`
-	FunctionalNameCCF             string `json:"U_CCF_FunctionalName"`
+	ItemCode   string `json:"ItemCode"`
+	ItemNameDA string `json:"ItemName"`
+	/*FunctionalName                string `json:"U_BOYX_Varebeskrivelse"`*/
+	FunctionalProductNameDA       string `json:"U_CCF_Functional_Name"`
 	ShelfLifeFromArrivalInDays    string `json:"U_BOYX_Holdbarhed_Kunde"`
 	ShelfLifeFromProductionInDays int    `json:"U_BOYX_Holdbarhed"`
 	AvailabilityDateTime          string `json:"U_CCF_LaunchDate"`
@@ -46,7 +49,7 @@ type SapApiItemsData struct {
 	OrganicTradeItemCodeList      int    `json:"U_CCF_OrganicCode"`    // https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=OrganicTradeItemCodeList.da
 	ManufacturerGLN               string `json:"CCF_Manufacturer_GLN"` // "D8242" https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/field.xsp?documentId=516f5dd5e012c0f7c12589090055223c&action=openDocument
 	BrandOwnerGLN                 string `json:"CCF_BrandOwner_GLN"`   // "D8346" https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/field.xsp?documentId=d23d8eda0e728e26c1258909005522e1&action=openDocument
-
+	ProductImageUrl               string `json:"U_CCF_GS1_Z1C1_URL"`
 	// Logistical Data // TODO: Use the actual UOM module in SAP for these instead of the homemade one from Bitpeople.
 	//ItemUnitOfMeasurementCollection []ItemUnitOfMeasurement `json:"ItemUnitOfMeasurementCollection"`
 	// We want to use the above instead, but the data is not in SAP yet, so we start with this.
@@ -68,20 +71,27 @@ type SapApiItemsData struct {
 	// TODO: Pallet
 
 	// Allergen containment information
-	ContainmentLevelGluten    string `json:"U_BOYX_gluten"`
-	ContainmentLevelCrustacea string `json:"U_BOYX_Krebsdyr"`
-	ContainmentLevelEgg       string `json:"U_BOYX_aag"`
-	ContainmentLevelFish      string `json:"U_BOYX_fisk"`
-	ContainmentLevelPeanut    string `json:"U_BOYX_JN"`
-	ContainmentLevelSoy       string `json:"U_BOYX_soja"`
-	ContainmentLevelMilk      string `json:"U_BOYX_ML"`
-	ContainmentLevelAlmonds   string `json:"U_BOYX_mandel"`
-	ContainmentLevelHazelnut  string `json:"U_BOYX_hassel"`
-	ContainmentLevelWalnut    string `json:"U_BOYX_val"`
-	ContainmentLevelCashew    string `json:"U_BOYX_Cashe"`
-	ContainmentLevelPecan     string `json:"U_BOYX_Pekan"`
-	ContainmentLevelBrazilNut string `json:"U_BOYX_peka"`
-	ContainmentLevelPistachio string `json:"U_BOYX_Pistacie"`
+	ContainmentLevelGluten                   string `json:"U_BOYX_gluten"`
+	ContainmentLevelCrustacea                string `json:"U_BOYX_Krebsdyr"`
+	ContainmentLevelEgg                      string `json:"U_BOYX_aag"`
+	ContainmentLevelFish                     string `json:"U_BOYX_fisk"`
+	ContainmentLevelPeanut                   string `json:"U_BOYX_JN"`
+	ContainmentLevelSoy                      string `json:"U_BOYX_soja"`
+	ContainmentLevelMilk                     string `json:"U_BOYX_ML"`
+	ContainmentLevelAlmonds                  string `json:"U_BOYX_mandel"`
+	ContainmentLevelHazelnut                 string `json:"U_BOYX_hassel"`
+	ContainmentLevelWalnut                   string `json:"U_BOYX_val"`
+	ContainmentLevelCashew                   string `json:"U_BOYX_Cashe"`
+	ContainmentLevelPecan                    string `json:"U_BOYX_Pekan"`
+	ContainmentLevelBrazilNut                string `json:"U_BOYX_peka"`
+	ContainmentLevelPistachio                string `json:"U_BOYX_Pistacie"`
+	ContainmentLevelQueenslandNut            string `json:"U_BOYX_Queensland"`
+	ContainmentLevelCelery                   string `json:"U_BOYX_Selleri"`
+	ContainmentLevelMustard                  string `json:"U_BOYX_Sennep"`
+	ContainmentLevelSulfurDioxideAndSulfites string `json:"U_BOYX_Svovldioxid"`
+	ContainmentLevelSesameSeeds              string `json:"U_BOYX_Sesam"`
+	ContainmentLevelLupine                   string `json:"U_BOYX_Lupin"`
+	ContainmentLevelMollusks                 string `json:"U_BOYX_BL"`
 
 	// Claims
 	GlutenFree  string `json:"U_BOYX_Gluten1"`

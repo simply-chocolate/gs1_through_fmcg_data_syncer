@@ -12,8 +12,8 @@ type FmcgProductBodyBaseItem struct {
 	ManufacturerGLN                     string `json:"D8242_1"` //
 	BrandOwnerGLN                       string `json:"D8346"`   //
 	GPCCategoryCode                     string `json:"D8245"`   // 10000045
-	ImportClassificationValue           string `json:"D8253_1"` // Default 18069019 00 for Chocolate //TODO: Spørg FMCG indtil disse to felter
-	ImportClassificationType            string `json:"D8254_1"` // [CUSTOMS_TARIFF_NUMBER, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=ImportClassificationTypeCodeList.da
+	ImportClassificationValue           string `json:"D8253_1"` // Default 18069019 for Chocolate //TODO: Spørg FMCG indtil disse to felter
+	ImportClassificationType            string `json:"D8254_1"` // [INSTRASTAT, CUSTOMS_TARIFF_NUMBER...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=ImportClassificationTypeCodeList.da
 	TargetMarketCode                    string `json:"D8255"`   // Default 208 for DK
 	ItemCode                            string `json:"D8256"`
 	ItemNameDA                          string `json:"D8258_1"` // The name of the item in the language specified in D8259_1
@@ -55,51 +55,50 @@ type FmcgProductBodyBaseItem struct {
 	//	Allergens
 	//	List of Allergens and their codes - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=AllergenTypeCodeList.da
 	// 	List of Containment types - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=AllergenTypeCodeList.da
-	AllergenGluten            string `json:"D8166_1"`  // AW
-	ContainmentLevelGluten    string `json:"D8170_1"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_gluten
-	AllergenCrustacea         string `json:"D8166_2"`  // AC (Krebsdyr)
-	ContainmentLevelCrustacea string `json:"D8170_2"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_Krebsdyr
-	AllergenEgg               string `json:"D8166_3"`  // AE
-	ContainmentLevelEgg       string `json:"D8170_3"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_aag
-	AllergenFish              string `json:"D8166_4"`  // AF
-	ContainmentLevelFish      string `json:"D8170_4"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_fisk
-	AllergenPeanut            string `json:"D8166_5"`  // AP
-	ContainmentLevelPeanut    string `json:"D8170_5"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_JN
-	AllergenSoy               string `json:"D8166_6"`  // AY
-	ContainmentLevelSoy       string `json:"D8170_6"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_soja
-	AllergenMilk              string `json:"D8166_7"`  // AM
-	ContainmentLevelMilk      string `json:"D8170_7"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_ML
-	AllergenAlmonds           string `json:"D8166_8"`  // SA
-	ContainmentLevelAlmonds   string `json:"D8170_8"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_mandel
-	AllergenHazelnut          string `json:"D8166_9"`  // SH
-	ContainmentLevelHazelnut  string `json:"D8170_9"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_hassel
-	AllergenWalnut            string `json:"D8166_10"` // SW
-	ContainmentLevelWalnut    string `json:"D8170_10"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_val
-	AllergenCashew            string `json:"D8166_11"` // SC
-	ContainmentLevelCashew    string `json:"D8170_11"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_Cashe
-	AllergenPecan             string `json:"D8166_12"` // SP
-	ContainmentLevelPecan     string `json:"D8170_12"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_Pekan
-	AllergenBrazilNut         string `json:"D8166_13"` // SR (Paranød)
-	ContainmentLevelBrazilNut string `json:"D8170_13"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_peka
-	AllergenPistachio         string `json:"D8166_14"` // ST
-	ContainmentLevelPistachio string `json:"D8170_14"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_Pistacie
-	/*
-		//TODO: Find out which allergens are required.
-			AllergenQueenslandNut                    string `json:"D8166_15"` // SQ
-			ContainmentLevelQueenslandNut            string `json:"D8170_15"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
-			AllergenCelery                           string `json:"D8166_16"` // BC
-			ContainmentLevelCelery                   string `json:"D8170_16"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
-			AllergenMustard                          string `json:"D8166_17"` // BM
-			ContainmentLevelMustard                  string `json:"D8170_17"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
-			AllergenSulfurDioxideAndSulfites         string `json:"D8166_18"` // AU
-			ContainmentLevelSulfurDioxideAndSulfites string `json:"D8170_18"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
-			AllergenSesameSeeds                      string `json:"D8166_19"` // AS
-			ContainmentLevelSesameSeeds              string `json:"D8170_19"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
-			AllergenLupine                           string `json:"D8166_20"` // NL
-			ContainmentLevelLupine                   string `json:"D8170_20"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
-			AllergenMollusks                         string `json:"D8166_21"` // UM (Bløddyr)
-			ContainmentLevelMollusks                 string `json:"D8170_21"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
-	*/
+	AllergenGluten                           string `json:"D8166_1"`  // AW
+	ContainmentLevelGluten                   string `json:"D8170_1"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_gluten
+	AllergenCrustacea                        string `json:"D8166_2"`  // AC (Krebsdyr)
+	ContainmentLevelCrustacea                string `json:"D8170_2"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_Krebsdyr
+	AllergenEgg                              string `json:"D8166_3"`  // AE
+	ContainmentLevelEgg                      string `json:"D8170_3"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_aag
+	AllergenFish                             string `json:"D8166_4"`  // AF
+	ContainmentLevelFish                     string `json:"D8170_4"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_fisk
+	AllergenPeanut                           string `json:"D8166_5"`  // AP
+	ContainmentLevelPeanut                   string `json:"D8170_5"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_JN
+	AllergenSoy                              string `json:"D8166_6"`  // AY
+	ContainmentLevelSoy                      string `json:"D8170_6"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_soja
+	AllergenMilk                             string `json:"D8166_7"`  // AM
+	ContainmentLevelMilk                     string `json:"D8170_7"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_ML
+	AllergenAlmonds                          string `json:"D8166_8"`  // SA
+	ContainmentLevelAlmonds                  string `json:"D8170_8"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_mandel
+	AllergenHazelnut                         string `json:"D8166_9"`  // SH
+	ContainmentLevelHazelnut                 string `json:"D8170_9"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_hassel
+	AllergenWalnut                           string `json:"D8166_10"` // SW
+	ContainmentLevelWalnut                   string `json:"D8170_10"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_val
+	AllergenCashew                           string `json:"D8166_11"` // SC
+	ContainmentLevelCashew                   string `json:"D8170_11"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_Cashe
+	AllergenPecan                            string `json:"D8166_12"` // SP
+	ContainmentLevelPecan                    string `json:"D8170_12"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_Pekan
+	AllergenBrazilNut                        string `json:"D8166_13"` // SR (Paranød)
+	ContainmentLevelBrazilNut                string `json:"D8170_13"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_peka
+	AllergenPistachio                        string `json:"D8166_14"` // ST
+	ContainmentLevelPistachio                string `json:"D8170_14"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_Pistacie
+	AllergenQueenslandNut                    string `json:"D8166_15"` // SQ
+	ContainmentLevelQueenslandNut            string `json:"D8170_15"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
+	AllergenCelery                           string `json:"D8166_16"` // BC
+	ContainmentLevelCelery                   string `json:"D8170_16"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
+	AllergenMustard                          string `json:"D8166_17"` // BM
+	ContainmentLevelMustard                  string `json:"D8170_17"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
+	AllergenSulfurDioxideAndSulfites         string `json:"D8166_18"` // AU
+	ContainmentLevelSulfurDioxideAndSulfites string `json:"D8170_18"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
+	AllergenSesameSeeds                      string `json:"D8166_19"` // AS
+	ContainmentLevelSesameSeeds              string `json:"D8170_19"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
+	AllergenLupine                           string `json:"D8166_20"` // NL
+	ContainmentLevelLupine                   string `json:"D8170_20"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
+	AllergenMollusks                         string `json:"D8166_21"` // UM (Bløddyr)
+	ContainmentLevelMollusks                 string `json:"D8170_21"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
+	AllergenNuts                             string `json:"D8166_22"` // AN
+	ContainmentLevelNuts                     string `json:"D8170_22"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 
 	// 	Nutritional Information
 	EnergyInkJ                        string `json:"D8175-UNPREPARED"`   // SAP FIELD: U_BOYX_EnergiK
@@ -142,6 +141,13 @@ type FmcgProductBodyBaseItem struct {
 	StorageInformationLanguageCode1 string `json:"D0352Attr_1"` // Language code of the language the StorageInformation in D0352_1 is written in.
 	StorageInformation              string `json:"D0352_1"`     // Default is "Tørt og ved max 21 grader"
 
+	/* This might not be necessary as we can just upload the pictures directly into GS1.
+	// Image Information
+	ProductImageUrl        string `json:"D8350_1"` // Image of Product
+	ProductImageType       string `json:"D8349_1"` // [PRODUCT_IMAGE, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=ReferencedFileTypeCodeList.da
+	ProductImageFileName   string `json:"D8388_1"` // GTIN + Z1C1
+	ProductImageFileFormat string `json:"D8387_1"` // png
+	*/
 }
 
 type FmcgProductPostResult struct {
@@ -178,12 +184,21 @@ func FMCGApiPostBaseItem(ItemInfo FmcgProductBodyBaseItem, count int) error {
 	}
 
 	response := resp.Result().(*FmcgProductPostResult)
+
 	for _, validationError := range response.ValidationErrors {
+		fmt.Println("Validation Errors for baseItem with GTIN: " + ItemInfo.GTIN)
 		fmt.Println("fieldId:", validationError.FieldId)
 		fmt.Println("fieldLabel:", validationError.FieldLabel)
 		fmt.Println("message:", validationError.Message)
 		fmt.Println("messageType:", validationError.MessageType)
 		fmt.Println("________________")
+	}
+
+	if len(response.ValidationErrors) == 0 {
+		var SendToGS1Data FMCGIdentifierData
+		SendToGS1Data.GTIN = ItemInfo.GTIN
+		SendToGS1Data.TargetMarketCode = ItemInfo.TargetMarketCode
+		FMCGSendToGS1(SendToGS1Data, 0)
 	}
 
 	return nil

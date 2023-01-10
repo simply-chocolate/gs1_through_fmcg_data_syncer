@@ -71,12 +71,21 @@ func FMCGApiPostCase(caseInfo FmcgProductBodyCase, count int) error {
 	}
 
 	response := resp.Result().(*FmcgProductPostResult)
+
 	for _, validationError := range response.ValidationErrors {
+		fmt.Println("Validation Errors for case with GTIN: " + caseInfo.GTIN)
 		fmt.Println("fieldId:", validationError.FieldId)
 		fmt.Println("fieldLabel:", validationError.FieldLabel)
 		fmt.Println("message:", validationError.Message)
 		fmt.Println("messageType:", validationError.MessageType)
 		fmt.Println("________________")
+	}
+
+	if len(response.ValidationErrors) == 0 {
+		var SendToGS1Data FMCGIdentifierData
+		SendToGS1Data.GTIN = caseInfo.GTIN
+		SendToGS1Data.TargetMarketCode = caseInfo.TargetMarketCode
+		FMCGSendToGS1(SendToGS1Data, 0)
 	}
 
 	return nil

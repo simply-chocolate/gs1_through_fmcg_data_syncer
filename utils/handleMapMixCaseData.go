@@ -37,7 +37,7 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 	}
 
 	mixCaseData.ItemNameLanguageCodeDA = "da"
-	mixCaseData.FunctionalProductNameDA = itemData.FunctionalName
+	mixCaseData.FunctionalProductNameDA = itemData.FunctionalProductNameDA
 	mixCaseData.FunctionalProductNameLanguageCodeDA = "da"
 	mixCaseData.UnitOfMeasure = "CASE"
 	mixCaseData.IsOrderingUnit = true
@@ -45,7 +45,7 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 
 	shelfLifeAsInt, err := strconv.Atoi(itemData.ShelfLifeFromArrivalInDays)
 	if err != nil {
-		return fmcg_api_wrapper.FmcgProductBodyMixCase{}, fmt.Errorf("error converting shelfLife to int. err: %v", err)
+		return fmcg_api_wrapper.FmcgProductBodyMixCase{}, fmt.Errorf("error converting shelfLife to int on mixCaseData. GTIN: %v err: %v", mixCaseData.GTIN, err)
 	}
 	mixCaseData.ShelfLifeFromArrivalInDays = shelfLifeAsInt
 
@@ -58,11 +58,11 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 	mixCaseData = MapLogisticalInformationMixCase(mixCaseData, itemData)
 
 	// Dates
-	mixCaseData.EffectiveDateTime, err = FormatSapDateToFMCHDate(itemData.EffectiveDateTime)
+	mixCaseData.EffectiveDateTime, err = FormatSapDateToFMCGDate(itemData.EffectiveDateTime)
 	if err != nil {
 		return fmcg_api_wrapper.FmcgProductBodyMixCase{}, fmt.Errorf("error converting effectiveDateTime to FMCG Format. err: %v", err)
 	}
-	mixCaseData.StartAvailabilityDateTime, err = FormatSapDateToFMCHDate(itemData.AvailabilityDateTime)
+	mixCaseData.StartAvailabilityDateTime, err = FormatSapDateToFMCGDate(itemData.AvailabilityDateTime)
 	if err != nil {
 		return fmcg_api_wrapper.FmcgProductBodyMixCase{}, fmt.Errorf("error converting AvailabilityDateTime to FMCG Format. err: %v", err)
 	}

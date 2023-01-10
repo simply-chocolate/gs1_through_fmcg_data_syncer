@@ -34,6 +34,47 @@ func MapAllergens(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, itemDat
 	baseItemData.ContainmentLevelBrazilNut = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelBrazilNut)
 	baseItemData.AllergenPistachio = "ST"
 	baseItemData.ContainmentLevelPistachio = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelPistachio)
+	baseItemData.AllergenQueenslandNut = "SQ"
+	baseItemData.ContainmentLevelQueenslandNut = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelQueenslandNut)
+	baseItemData.AllergenCelery = "BC"
+	baseItemData.ContainmentLevelCelery = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelCelery)
+	baseItemData.AllergenMustard = "BM"
+	baseItemData.ContainmentLevelMustard = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelMustard)
+	baseItemData.AllergenSulfurDioxideAndSulfites = "AU"
+	baseItemData.ContainmentLevelSulfurDioxideAndSulfites = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelSulfurDioxideAndSulfites)
+	baseItemData.AllergenSesameSeeds = "AS"
+	baseItemData.ContainmentLevelSesameSeeds = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelSesameSeeds)
+	baseItemData.AllergenLupine = "NL"
+	baseItemData.ContainmentLevelLupine = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelLupine)
+	baseItemData.AllergenMollusks = "UM"
+	baseItemData.ContainmentLevelMollusks = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelMollusks)
+
+	containmentLevelNuts := "FREE_FROM"
+	if baseItemData.ContainmentLevelPeanut == "MAY_CONTAIN" ||
+		baseItemData.ContainmentLevelAlmonds == "MAY_CONTAIN" ||
+		baseItemData.ContainmentLevelHazelnut == "MAY_CONTAIN" ||
+		baseItemData.ContainmentLevelWalnut == "MAY_CONTAIN" ||
+		baseItemData.ContainmentLevelCashew == "MAY_CONTAIN" ||
+		baseItemData.ContainmentLevelPecan == "MAY_CONTAIN" ||
+		baseItemData.ContainmentLevelBrazilNut == "MAY_CONTAIN" ||
+		baseItemData.ContainmentLevelPistachio == "MAY_CONTAIN" ||
+		baseItemData.ContainmentLevelQueenslandNut == "MAY_CONTAIN" {
+		containmentLevelNuts = "MAY_CONTAIN"
+	}
+	if baseItemData.ContainmentLevelPeanut == "CONTAINS" ||
+		baseItemData.ContainmentLevelAlmonds == "CONTAINS" ||
+		baseItemData.ContainmentLevelHazelnut == "CONTAINS" ||
+		baseItemData.ContainmentLevelWalnut == "CONTAINS" ||
+		baseItemData.ContainmentLevelCashew == "CONTAINS" ||
+		baseItemData.ContainmentLevelPecan == "CONTAINS" ||
+		baseItemData.ContainmentLevelBrazilNut == "CONTAINS" ||
+		baseItemData.ContainmentLevelPistachio == "CONTAINS" ||
+		baseItemData.ContainmentLevelQueenslandNut == "CONTAINS" {
+		containmentLevelNuts = "CONTAINS"
+	}
+	baseItemData.AllergenNuts = "AN"
+	baseItemData.ContainmentLevelNuts = containmentLevelNuts
+
 	return baseItemData
 }
 
