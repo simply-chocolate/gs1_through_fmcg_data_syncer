@@ -135,7 +135,7 @@ func MapLogisticalInformation(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseI
 	baseItemData.NetWeightUoM = "GRM"
 	baseItemData.GrossWeight = itemData.BaseUnitGrossWeight
 	baseItemData.GrossWeightUoM = "GRM"
-	baseItemData.PackagingType = "BX" // TODO: Add fields to SAP
+	baseItemData.PackagingType = itemData.PackagingType
 
 	return baseItemData
 }

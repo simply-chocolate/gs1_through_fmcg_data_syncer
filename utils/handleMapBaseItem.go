@@ -64,21 +64,6 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 	baseItemData.IsPackagingMarkedReturnable = false
 	baseItemData.OrganicTradeItemCodeList = itemData.OrganicTradeItemCodeList
 
-	// Logistical Data
-	baseItemData.NetContent = itemData.BaseUnitNetWeight
-	baseItemData.NetContentUoM = "GRM"
-	baseItemData.Height = itemData.BaseUnitHeight
-	baseItemData.HeightUOM = "MMT"
-	baseItemData.Width = itemData.BaseUnitWidth
-	baseItemData.WidthUOM = "MMT"
-	baseItemData.Depth = itemData.BaseUnitDepth
-	baseItemData.DepthUOM = "MMT"
-	baseItemData.NetWeight = itemData.BaseUnitNetWeight
-	baseItemData.NetWeightUoM = "GRM"
-	baseItemData.GrossWeight = itemData.BaseUnitGrossWeight
-	baseItemData.GrossWeightUoM = "GRM"
-	baseItemData.PackagingType = itemData.PackagingType
-
 	// Dates
 	baseItemData.EffectiveDateTime, err = FormatSapDateToFMCGDate(itemData.EffectiveDateTime)
 	if err != nil {
