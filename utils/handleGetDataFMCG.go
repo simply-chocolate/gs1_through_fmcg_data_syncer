@@ -14,11 +14,12 @@ func GetAllProductsStatusFMCG() (map[string]time.Time, error) {
 
 	for _, products := range resp.Body.Products {
 		GTIN := products.ProductId[0:14]
-		LastModifiedDate, err := FormatFMCGDateToTimeType(products.LastModified)
+		LastModifiedDate, err := FormatFMCGDateToTimeType(products.Gs1LastSyncDate)
 		if err != nil {
 			return map[string]time.Time{}, err
 		}
 		LastModifiedDates[GTIN] = LastModifiedDate
 	}
+
 	return LastModifiedDates, nil
 }

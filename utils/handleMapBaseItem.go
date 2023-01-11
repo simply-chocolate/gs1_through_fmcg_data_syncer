@@ -5,7 +5,6 @@ import (
 	"gs1_syncer/fmcg_api_wrapper"
 	"gs1_syncer/sap_api_wrapper"
 	"strconv"
-	"strings"
 )
 
 func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, itemData sap_api_wrapper.SapApiItemsData) (fmcg_api_wrapper.FmcgProductBodyBaseItem, error) {
@@ -63,13 +62,7 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 	baseItemData.IsConsumerUnit = true
 	baseItemData.IsShippingUnit = false
 	baseItemData.IsPackagingMarkedReturnable = false
-	var organicCode int
-	if strings.Contains(itemData.ItemNameDA, "ØKO") {
-		organicCode = 1
-	} else {
-		organicCode = 5
-	}
-	baseItemData.OrganicTradeItemCodeList = organicCode
+	baseItemData.OrganicTradeItemCodeList = itemData.OrganicTradeItemCodeList
 
 	// Logistical Data
 	baseItemData.NetContent = itemData.BaseUnitNetWeight
@@ -84,7 +77,7 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 	baseItemData.NetWeightUoM = "GRM"
 	baseItemData.GrossWeight = itemData.BaseUnitGrossWeight
 	baseItemData.GrossWeightUoM = "GRM"
-	baseItemData.PackagingType = "BX" // TODO: Add fields to SAP
+	baseItemData.PackagingType = itemData.PackagingType
 
 	// Dates
 	baseItemData.EffectiveDateTime, err = FormatSapDateToFMCGDate(itemData.EffectiveDateTime)

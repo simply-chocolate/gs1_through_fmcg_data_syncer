@@ -29,8 +29,9 @@ type SapApiItemsData struct {
 	// Update Information
 	UpdateDate string `json:"UpdateDate"`
 	UpdateTime string `json:"UpdateTime"`
+	GS1Status  string `json:"U_CCF_GS1_Status"`
 
-	TypeOfProduct string `json:"U_CCF_Type"`    // If this is Equal to // TODO: ADd type "Campaign Display" and make sure bars with 20 pr. colli is grouped like that
+	TypeOfProduct string `json:"U_CCF_Type"`    // If this is Equal to "Kampagne" then it should not have a BaseUnit ItemCode
 	UoMGroupEntry int    `json:"UoMGroupEntry"` // If this is Equal to 42 then it's a Campaign Display
 	// General Information
 	ItemBarCodeCollection []struct {
@@ -50,16 +51,17 @@ type SapApiItemsData struct {
 	ManufacturerGLN               string `json:"CCF_Manufacturer_GLN"` // "D8242" https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/field.xsp?documentId=516f5dd5e012c0f7c12589090055223c&action=openDocument
 	BrandOwnerGLN                 string `json:"CCF_BrandOwner_GLN"`   // "D8346" https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/field.xsp?documentId=d23d8eda0e728e26c1258909005522e1&action=openDocument
 	ProductImageUrl               string `json:"U_CCF_GS1_Z1C1_URL"`
+	PackagingType                 string `json:"U_CCF_PackagingType"`
 	// Logistical Data // TODO: Use the actual UOM module in SAP for these instead of the homemade one from Bitpeople.
 	//ItemUnitOfMeasurementCollection []ItemUnitOfMeasurement `json:"ItemUnitOfMeasurementCollection"`
 	// We want to use the above instead, but the data is not in SAP yet, so we start with this.
-	// PackagingType       string `json:"U_CCF_PackagingType"` //TODO: Add this field in SAP
 	// BaseUnit
 	BaseUnitWidth       int `json:"U_BOYX_Bredde_e"`
 	BaseUnitHeight      int `json:"U_BOYX_hoojde_e"`
 	BaseUnitDepth       int `json:"U_BOYX_dybde_e"`
 	BaseUnitNetWeight   int `json:"U_BOYX_netto_e"`
 	BaseUnitGrossWeight int `json:"U_BOYX_brutto_e"`
+
 	// Case
 	CaseWidth       int `json:"U_BOYX_bredde_k"`
 	CaseHeight      int `json:"U_BOYX_hoojde_k"`

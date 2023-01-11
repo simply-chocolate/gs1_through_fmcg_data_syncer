@@ -1,6 +1,8 @@
 package fmcg_api_wrapper
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type FmcgProductBodyBaseItem struct {
 	GTIN     string `json:"D8165"` // Barcode with 0 in front
@@ -12,7 +14,7 @@ type FmcgProductBodyBaseItem struct {
 	ManufacturerGLN                     string `json:"D8242_1"` //
 	BrandOwnerGLN                       string `json:"D8346"`   //
 	GPCCategoryCode                     string `json:"D8245"`   // 10000045
-	ImportClassificationValue           string `json:"D8253_1"` // Default 18069019 for Chocolate //TODO: Spørg FMCG indtil disse to felter
+	ImportClassificationValue           string `json:"D8253_1"` // Default 18069019 for Chocolate
 	ImportClassificationType            string `json:"D8254_1"` // [INSTRASTAT, CUSTOMS_TARIFF_NUMBER...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=ImportClassificationTypeCodeList.da
 	TargetMarketCode                    string `json:"D8255"`   // Default 208 for DK
 	ItemCode                            string `json:"D8256"`
@@ -198,7 +200,12 @@ func FMCGApiPostBaseItem(ItemInfo FmcgProductBodyBaseItem, count int) error {
 		var SendToGS1Data FMCGIdentifierData
 		SendToGS1Data.GTIN = ItemInfo.GTIN
 		SendToGS1Data.TargetMarketCode = ItemInfo.TargetMarketCode
-		FMCGSendToGS1(SendToGS1Data, 0)
+
+		err = SendGTINToGS1(SendToGS1Data, ItemInfo.ItemCode)
+		if err != nil {
+			return fmt.Errorf("error sending product with GTIN:%v to GS1. \nError:%v", SendToGS1Data.GTIN, err)
+		}
+
 	}
 
 	return nil

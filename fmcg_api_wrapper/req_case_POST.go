@@ -85,7 +85,11 @@ func FMCGApiPostCase(caseInfo FmcgProductBodyCase, count int) error {
 		var SendToGS1Data FMCGIdentifierData
 		SendToGS1Data.GTIN = caseInfo.GTIN
 		SendToGS1Data.TargetMarketCode = caseInfo.TargetMarketCode
-		FMCGSendToGS1(SendToGS1Data, 0)
+
+		err = SendGTINToGS1(SendToGS1Data, caseInfo.ItemCode)
+		if err != nil {
+			return fmt.Errorf("error sending product with GTIN:%v to GS1. \nError:%v", SendToGS1Data.GTIN, err)
+		}
 	}
 
 	return nil

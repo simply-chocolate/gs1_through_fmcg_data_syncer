@@ -76,10 +76,8 @@ func MapData() error {
 				}
 
 				if !shouldBeProcessed {
-					fmt.Println("This baseItem has a more recent update in FMCG system, so it will not be processed.")
 					continue
 				}
-				fmt.Println("We're gonna process this item!!!", ItemBarCodeCollection.Barcode)
 
 				baseItemData, err = MapBaseItemData(baseItemData, itemData)
 				if err != nil {
@@ -101,10 +99,8 @@ func MapData() error {
 				}
 
 				if !shouldBeProcessed {
-					fmt.Println("This case has a more recent update in FMCG system, so it will not be processed.")
 					continue
 				}
-				fmt.Println("We're gonna process this item!!!", ItemBarCodeCollection.Barcode)
 
 				caseData, err = MapCaseData(caseData, itemData, UnitGTIN)
 				if err != nil {

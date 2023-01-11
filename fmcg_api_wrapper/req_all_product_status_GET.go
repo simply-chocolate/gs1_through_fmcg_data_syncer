@@ -8,11 +8,13 @@ type FMCGAllProductsStatusResults struct {
 }
 
 type FMCGProductStatus struct {
-	ProductId         string   `json:"productId"`
-	LastModified      string   `json:"lastModified"`
-	FmcgProductStatus string   `json:"fmcgProductsStatus"`
-	Gs1Status         string   `json:"gs1Status"`
-	Gs1Response       []string `json:"gs1Response"`
+	ProductId          string   `json:"productId"`
+	Gs1LastSyncDate    string   `json:"gs1LastSendDate"`
+	FmcgProductStatus  string   `json:"fmcgProductsStatus"`
+	FmcgLastModifyDate string   `json:"lastModified"`
+	Gs1StatusDate      string   `json:"gs1StatusDate"`
+	Gs1Status          string   `json:"gs1Status"`
+	Gs1Response        []string `json:"gs1Response"`
 }
 
 type FMCGAllProductsStatusReturn struct {
