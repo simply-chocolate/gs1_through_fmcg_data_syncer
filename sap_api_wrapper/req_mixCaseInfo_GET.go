@@ -32,7 +32,7 @@ func SapApiGetMixCaseData(params SapApiQueryParams) (SapApiGetMixCaseDataReturn,
 			R().
 			SetResult(SapApiGetMixCaseDataResult{}).
 			SetQueryParams(params.AsReqParams()).
-			Get("SQLQueries('CQ10002')/List") // TODO: Skal det være en Custom Query?
+			Get("SQLQueries('CQ10002')/List")
 		if err != nil {
 			fmt.Println(err)
 			return SapApiGetMixCaseDataReturn{}, err

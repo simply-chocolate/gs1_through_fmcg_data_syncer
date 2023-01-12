@@ -41,7 +41,21 @@ func MapBaseUnitsForMixCase(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase,
 		}
 		for _, contentItemData := range mixContentItemInfo.Value {
 			for _, barcodeCollection := range contentItemData.ItemBarCodeCollection {
-				if barcodeCollection.UoMEntry == 2 {
+				// We use the baseItem as thats the amount on the Bill of Materials
+				if barcodeCollection.UoMEntry == 1 {
+					var identifierData fmcg_api_wrapper.FMCGIdentifierData
+					identifierData.GTIN = barcodeCollection.Barcode
+					identifierData.TargetMarketCode = "208"
+
+					productStatus, err := fmcg_api_wrapper.FMCGApiGetProductStatus(identifierData, 0)
+					if err != nil {
+						return fmcg_api_wrapper.FmcgProductBodyMixCase{}, fmt.Errorf("error getting content item from FMCG. If the status is 404 the it has not been synced yet. ItemCode:%v BarCode:%v\n err:%v", contentItemData.ItemCode, barcodeCollection.Barcode, err)
+					}
+
+					if productStatus.Body.Gs1Status != "OK" {
+						return fmcg_api_wrapper.FmcgProductBodyMixCase{}, fmt.Errorf(" ItemCode:%v BarCode:%v has not been synced all the way to GS1 with OK. Check GS1 Status: %v\n err:%v", contentItemData.ItemCode, barcodeCollection.Barcode, productStatus.Body.Gs1Status, err)
+					}
+
 					// TODO: Add some logic to check if this Barcode exists within FMCG/GS1 before you do anything with it.
 					fmt.Printf("We're gonna do something with this barcode: %v\n", barcodeCollection.Barcode)
 				}
