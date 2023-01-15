@@ -51,7 +51,7 @@ type SapApiItemsData struct {
 	ManufacturerGLN               string `json:"CCF_Manufacturer_GLN"` // "D8242" https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/field.xsp?documentId=516f5dd5e012c0f7c12589090055223c&action=openDocument
 	BrandOwnerGLN                 string `json:"CCF_BrandOwner_GLN"`   // "D8346" https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/field.xsp?documentId=d23d8eda0e728e26c1258909005522e1&action=openDocument
 	ProductImageUrl               string `json:"U_CCF_GS1_Z1C1_URL"`
-	PackagingType                 string `json:"U_CCF_PackagingType"`
+	PackagingType                 string `json:"U_CCF_Packaging_Type"`
 	IsSalesReady                  string `json:"U_CCF_IsCaseSalesReady"`
 	// Logistical Data // TODO: Use the actual UOM module in SAP for these instead of the homemade one from Bitpeople.
 	//ItemUnitOfMeasurementCollection []ItemUnitOfMeasurement `json:"ItemUnitOfMeasurementCollection"`

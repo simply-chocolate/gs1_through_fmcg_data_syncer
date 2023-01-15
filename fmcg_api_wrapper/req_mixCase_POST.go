@@ -1,6 +1,9 @@
 package fmcg_api_wrapper
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 type FmcgProductBodyMixCase struct {
 	GTIN     string `json:"D8165"` // Barcode with 0 in front
@@ -48,46 +51,56 @@ type FmcgProductBodyMixCase struct {
 	Width          int    `json:"D8267"`   //
 	WidthUOM       string `json:"D8268"`   // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.daWidth
 	PackagingType  string `json:"D8275_1"` // [WRP, BX, JR] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=PackageTypeCodeList.da
-
-	UnitsPerCaseItem1  int    `json:"D8270_1"`
-	UnitGTINItem1      string `json:"D8249_1"`
-	UnitsPerCaseItem2  int    `json:"D8270_2"`
-	UnitGTINItem2      string `json:"D8249_2"`
-	UnitsPerCaseItem3  int    `json:"D8270_3"`
-	UnitGTINItem3      string `json:"D8249_3"`
-	UnitsPerCaseItem4  int    `json:"D8270_4"`
-	UnitGTINItem4      string `json:"D8249_4"`
-	UnitsPerCaseItem5  int    `json:"D8270_5"`
-	UnitGTINItem5      string `json:"D8249_5"`
-	UnitsPerCaseItem6  int    `json:"D8270_6"`
-	UnitGTINItem6      string `json:"D8249_6"`
-	UnitsPerCaseItem7  int    `json:"D8270_7"`
-	UnitGTINItem7      string `json:"D8249_7"`
-	UnitsPerCaseItem8  int    `json:"D8270_8"`
-	UnitGTINItem8      string `json:"D8249_8"`
-	UnitsPerCaseItem9  int    `json:"D8270_9"`
-	UnitGTINItem9      string `json:"D8249_9"`
-	UnitsPerCaseItem10 int    `json:"D8270_10"`
-	UnitGTINItem10     string `json:"D8249_10"`
-	UnitsPerCaseItem11 int    `json:"D8270_11"`
-	UnitGTINItem11     string `json:"D8249_11"`
-	UnitsPerCaseItem12 int    `json:"D8270_12"`
-	UnitGTINItem12     string `json:"D8249_12"`
-	UnitsPerCaseItem13 int    `json:"D8270_13"`
-	UnitGTINItem13     string `json:"D8249_13"`
-	UnitsPerCaseItem14 int    `json:"D8270_14"`
-	UnitGTINItem14     string `json:"D8249_14"`
-	UnitsPerCaseItem15 int    `json:"D8270_15"`
-	UnitGTINItem15     string `json:"D8249_15"`
 }
 
-func FMCGApiPostMixCase(caseInfo FmcgProductBodyMixCase, count int) error {
+type FMCGMixCaseContentBaseItem struct {
+	UnitsPerCase float64
+	UnitGTINItem string
+}
+
+func FMCGApiPostMixCase(mixCaseInfo FmcgProductBodyMixCase, mixCaseContent []FMCGMixCaseContentBaseItem, count int) error {
 	resp, err := GetFMCGApiBaseClient().
 		//DevMode().
 		R().
 		EnableDump().
 		SetResult(FmcgProductPostResult{}).
-		SetBody(caseInfo).
+		SetBody(mixCaseInfo).
+		Post("")
+	if err != nil {
+		return err
+	}
+
+	if resp.IsError() {
+		fmt.Printf("resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+		return resp.Err
+	}
+
+	// Iterate the mixCaseContent and post each baseItem
+	for i, baseItem := range mixCaseContent {
+		err = FMCGApiPostMixCaseContent(baseItem, mixCaseInfo.GTIN, mixCaseInfo.TargetMarketCode, i+1)
+		if err != nil {
+			return err
+		}
+	}
+	// TODO: Vi skal have smidt længden af validation errors tilbage så vi kan tjekke om den er = 0 ligesom når vi poster baseitem og case.
+
+	return nil
+}
+
+func FMCGApiPostMixCaseContent(mixCaseContentInfo FMCGMixCaseContentBaseItem, mixCaseGTIN string, TargetMarketCode string, count int) error {
+	fmt.Printf("Posting mixCaseContentInfo: %v\n", mixCaseContentInfo)
+	fmt.Println(count)
+	resp, err := GetFMCGApiBaseClient().
+		DevMode().
+		R().
+		EnableDump().
+		SetResult(FmcgProductPostResult{}).
+		SetBody(map[string]interface{}{
+			"D8165":                        mixCaseGTIN,
+			"D8255":                        TargetMarketCode,
+			"D8270_" + strconv.Itoa(count): mixCaseContentInfo.UnitsPerCase,
+			"D8249_" + strconv.Itoa(count): mixCaseContentInfo.UnitGTINItem,
+		}).
 		Post("")
 	if err != nil {
 		return err
@@ -100,6 +113,7 @@ func FMCGApiPostMixCase(caseInfo FmcgProductBodyMixCase, count int) error {
 
 	response := resp.Result().(*FmcgProductPostResult)
 	for _, validationError := range response.ValidationErrors {
+		fmt.Println("Validation Errors for baseItem with GTIN: " + mixCaseGTIN)
 		fmt.Println("fieldId:", validationError.FieldId)
 		fmt.Println("fieldLabel:", validationError.FieldLabel)
 		fmt.Println("message:", validationError.Message)

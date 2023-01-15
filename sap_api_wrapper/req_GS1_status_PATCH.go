@@ -25,12 +25,17 @@ func SetGs1StatusAndResponse(itemCode string, GS1Status string, GS1Response stri
 	resp, err := client.
 		//DevMode().
 		R().
+		EnableDump().
 		SetResult(SapApiPostLoginResult{}).
 		SetHeader("Content-Type", "application/json").
 		SetBody(body).
 		Patch(fmt.Sprintf("Items('%v')", itemCode))
 	if err != nil {
 		return err
+	}
+	if resp.IsError() {
+		fmt.Printf("resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+		return resp.Err
 	}
 
 	if resp.StatusCode != 204 {

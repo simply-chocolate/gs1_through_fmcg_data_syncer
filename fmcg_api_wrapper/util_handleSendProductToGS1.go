@@ -12,8 +12,7 @@ func SendGTINToGS1(identiferData FMCGIdentifierData, itemCode string) error {
 		return fmt.Errorf("error sending product with GTIN:%v to GS1. \nError:%v", identiferData.GTIN, err)
 	}
 
-	fmt.Println("Just posted the Product to GS1, let's wait for 5 minutes.")
-	time.Sleep(5 * time.Minute)
+	fmt.Printf("Just posted the Product with GTIN: %v to GS1. time now is: %v\n", identiferData.GTIN, time.Now())
 
 	resp, err := FMCGApiGetProductStatus(identiferData, 0)
 	if err != nil {
@@ -27,7 +26,7 @@ func SendGTINToGS1(identiferData FMCGIdentifierData, itemCode string) error {
 
 	err = sap_api_wrapper.SetGs1StatusAndResponse(itemCode, resp.Body.Gs1Status, gs1Resp)
 	if err != nil {
-		return fmt.Errorf("error setting the GS1 status and GS1 Response on itemCode:%v in SAP. \nError:%v", itemCode, err)
+		return err
 	}
 
 	return nil
