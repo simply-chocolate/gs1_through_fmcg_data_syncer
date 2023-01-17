@@ -71,7 +71,15 @@ type SapApiItemsData struct {
 	CaseGrossWeight int `json:"U_BOYX_brutto_k"`
 	UnitsPerCase    int `json:"U_BOYX_antal_k"`
 
-	// TODO: Pallet
+	// Pallet
+	PalletWidth             int `json:"U_BOYX_bredde_p"`
+	PalletHeight            int `json:"U_BOYX_hoojde_p"`
+	PalletDepth             int `json:"U_BOYX_dybde_p"`
+	PalletNetWeight         int `json:"U_BOYX_netto_p"`
+	PalletGrossWeight       int `json:"U_BOYX_brutto_p"`
+	PalletLayerAmount       int `json:"U_BOYX_kolli_p"`
+	PalletUnitsPerLayer     int `json:"U_BOYX_antalpalle_p"`
+	PalletSendingUnitAmount int `json:"U_BOYX_kollipalle_p"`
 
 	// Allergen containment information
 	ContainmentLevelGluten                   string `json:"U_BOYX_gluten"`
@@ -124,7 +132,7 @@ type SapApiGetItemsDataReturn struct {
 func SapApiGetItemsData(params SapApiQueryParams) (SapApiGetItemsDataReturn, error) {
 	client, err := GetSapApiAuthClient()
 	if err != nil {
-		fmt.Println("Error getting an authenticaed client")
+		fmt.Println("Error getting an authenticated client")
 		return SapApiGetItemsDataReturn{}, err
 	}
 

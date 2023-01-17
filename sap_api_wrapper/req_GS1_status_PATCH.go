@@ -3,8 +3,9 @@ package sap_api_wrapper
 import "fmt"
 
 type GS1StatusAndResponseBody struct {
-	GS1Status   string `json:"U_CCF_GS1_Status"`
-	GS1Response string `json:"U_CCF_GS1_Response"`
+	GS1Status     string `json:"U_CCF_GS1_Status"`
+	GS1Response   string `json:"U_CCF_GS1_Response"`
+	GS1FMCGStatus string `json:"U_CCF_Sync_GS1"`
 }
 
 type GS1StatusAndResponseResult struct {
@@ -15,6 +16,7 @@ func SetGs1StatusAndResponse(itemCode string, GS1Status string, GS1Response stri
 	var body GS1StatusAndResponseBody
 	body.GS1Status = GS1Status
 	body.GS1Response = GS1Response
+	body.GS1FMCGStatus = "A"
 
 	client, err := GetSapApiAuthClient()
 	if err != nil {

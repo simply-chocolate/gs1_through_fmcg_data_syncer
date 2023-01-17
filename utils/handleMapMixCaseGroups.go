@@ -49,6 +49,10 @@ func MapBaseUnitsForMixCase(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase,
 		var baseUnit fmcg_api_wrapper.FMCGMixCaseContentBaseItem
 		baseUnit.UnitGTINItem = "0" + baseItem.Value[0].ItemBarCodeCollection[0].Barcode
 		baseUnit.UnitsPerCase = 20.0
+
+		// TODO: Figure out why the script doesn't reach this with GTIN 05710885015642
+		fmt.Println("Finished adding baseunits to mixcase. BaseUnit:", baseUnit.UnitGTINItem, "UnitsPerCase:", baseUnit.UnitsPerCase, "ItemCode:", itemData.ItemCode)
+
 		baseUnits = append(baseUnits, baseUnit)
 
 	} else {

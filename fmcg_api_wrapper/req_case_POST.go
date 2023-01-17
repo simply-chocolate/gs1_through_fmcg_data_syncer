@@ -1,6 +1,9 @@
 package fmcg_api_wrapper
 
-import "fmt"
+import (
+	"fmt"
+	"gs1_syncer/teams_notifier"
+)
 
 type FmcgProductBodyCase struct {
 	GTIN     string `json:"D8165"` // Barcode with 0 in front
@@ -22,8 +25,8 @@ type FmcgProductBodyCase struct {
 
 	IsOrderingUnit                bool   `json:"D8271"` // [TRUE, FALSE] (True for cases and displays, False for BASE_UNIT)
 	UnitOfMeasure                 string `json:"D8276"` // [BASE_UNIT_OR_EACH, CASE, PALLET, DISPLAY_SHIPPER] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=TradeItemUnitDescriptorCodeList.da
-	ShelfLifeFromArrivalInDays    int    `json:"D8283"` // SAP FIELD: U_BOYX_Holdbarhed_Kunde
-	ShelfLifeFromProductionInDays int    `json:"D8284"` // SAP FIELD: U_BOYX_Holdbarhed
+	ShelfLifeFromArrivalInDays    int    `json:"D8283"` //
+	ShelfLifeFromProductionInDays int    `json:"D8284"` //
 	IsQuantityOrPriceVarying      bool   `json:"D8297"` // [TRUE, FALSE]
 	DangerousContent              string `json:"D8030"` // [NOT_APPLICABLE, TRUE, FALSE, UNSPECIFIED] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NonBinaryLogicEnumerationCodeList.da
 	RelevantForPriceComparison    string `json:"D8019"` // [NOT_APPLICABLE, TRUE, FALSE, UNSPECIFIED] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NonBinaryLogicEnumerationCodeList.da
@@ -47,10 +50,23 @@ type FmcgProductBodyCase struct {
 	DepthUOM       string `json:"D8266"` // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.daWidth
 	Width          int    `json:"D8267"` //
 	WidthUOM       string `json:"D8268"` // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.daWidth
-	UnitsPerCase   int    `json:"D8270_1"`
-	UnitGTIN       string `json:"D8249_1"`
-	PackagingType  string `json:"D8275_1"` // [WRP, BX, JR] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=PackageTypeCodeList.da
 
+	PalletGrossWeight    int    `json:"D8080"` //
+	PalletGrossWeightUoM string `json:"D8081"` // [GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
+	PalletHeight         int    `json:"D8083"` //
+	PalletHeightUoM      string `json:"D8084"` // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
+	PalletDepth          int    `json:"D8085"` //
+	PalletDepthUoM       string `json:"D8086"` // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
+	PalletWidth          int    `json:"D8087"` //
+	PalletWidthUoM       string `json:"D8088"` // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
+
+	PalletLayerAmount       int `json:"D8079"`
+	PalletSendingUnitAmount int `json:"D8078"`
+	PalletUnitsPerLayer     int `json:"D3438"`
+
+	UnitsPerCase  int    `json:"D8270_1"`
+	UnitGTIN      string `json:"D8249_1"`
+	PackagingType string `json:"D8275_1"` // [WRP, BX, JR] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=PackageTypeCodeList.da
 }
 
 func FMCGApiPostCase(caseInfo FmcgProductBodyCase, count int) error {
@@ -72,16 +88,19 @@ func FMCGApiPostCase(caseInfo FmcgProductBodyCase, count int) error {
 
 	response := resp.Result().(*FmcgProductPostResult)
 
-	for _, validationError := range response.ValidationErrors {
-		fmt.Println("Validation Errors for case with GTIN: " + caseInfo.GTIN)
-		fmt.Println("fieldId:", validationError.FieldId)
-		fmt.Println("fieldLabel:", validationError.FieldLabel)
-		fmt.Println("message:", validationError.Message)
-		fmt.Println("messageType:", validationError.MessageType)
-		fmt.Println("________________")
-	}
-
-	if len(response.ValidationErrors) == 0 {
+	if len(response.ValidationErrors) != 0 {
+		for _, validationError := range response.ValidationErrors {
+			err = teams_notifier.SendValidationErrorToTeams(caseInfo.GTIN,
+				validationError.FieldId,
+				validationError.FieldLabel,
+				validationError.Message,
+				validationError.MessageType,
+			)
+			if err != nil {
+				return err
+			}
+		}
+	} else {
 		var SendToGS1Data FMCGIdentifierData
 		SendToGS1Data.GTIN = caseInfo.GTIN
 		SendToGS1Data.TargetMarketCode = caseInfo.TargetMarketCode

@@ -19,15 +19,9 @@ func MapData() error {
 		}
 	}
 
-	FMCGProductsStatusTimes, err := GetAllProductsStatusFMCG()
-	if err != nil {
-		return fmt.Errorf("error getting the product statuses from FMCG. err: %v", err)
-	}
-
 	for _, itemData := range SapItemsData.Value {
 		var UnitGTIN string
-		fmt.Println("ItemCode: " + itemData.ItemCode)
-		// Check if UoMGroupEntry = 42 if yes we need to call a custom Query the tells us which products and EANS are contained in this product
+
 		if itemData.UoMGroupEntry == 42 || itemData.TypeOfProduct == "KampagneDisplay" {
 			for _, ItemBarCodeCollection := range itemData.ItemBarCodeCollection {
 				if ItemBarCodeCollection.UoMEntry == 1 {
@@ -35,16 +29,6 @@ func MapData() error {
 				} else if ItemBarCodeCollection.UoMEntry == 2 {
 					var mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase
 					mixCaseData.GTIN = "0" + ItemBarCodeCollection.Barcode
-
-					shouldBeProcessed, err := handleCheckIfSapUpdateTimeIsNewer(itemData, FMCGProductsStatusTimes, mixCaseData.GTIN)
-					if err != nil {
-						return fmt.Errorf("error checking if mixDisplay should be processed by comparing update times for GTIN:%v\n error:%v", ItemBarCodeCollection.Barcode, err)
-					}
-
-					if !shouldBeProcessed {
-						fmt.Println("This mixDisplay has a more recent update in FMCG system, so it will not be processed.")
-						continue
-					}
 
 					mixCaseData, mixCaseContent, err := MapMixCaseData(mixCaseData, itemData)
 					if err != nil {
@@ -58,22 +42,12 @@ func MapData() error {
 				}
 			}
 		}
-		continue
 		for _, ItemBarCodeCollection := range itemData.ItemBarCodeCollection {
 			// Check which UoM and then Map for BaseUnit or for Case
 			if ItemBarCodeCollection.UoMEntry == 1 {
 				UnitGTIN = "0" + ItemBarCodeCollection.Barcode
 				var baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem
 				baseItemData.GTIN = "0" + ItemBarCodeCollection.Barcode
-
-				shouldBeProcessed, err := handleCheckIfSapUpdateTimeIsNewer(itemData, FMCGProductsStatusTimes, baseItemData.GTIN)
-				if err != nil {
-					return fmt.Errorf("error checking if baseItem should be processed by comparing update times for GTIN:%v\n error:%v", ItemBarCodeCollection.Barcode, err)
-				}
-
-				if !shouldBeProcessed {
-					continue
-				}
 
 				baseItemData, err = MapBaseItemData(baseItemData, itemData)
 				if err != nil {
@@ -89,15 +63,6 @@ func MapData() error {
 				var caseData fmcg_api_wrapper.FmcgProductBodyCase
 				caseData.GTIN = "0" + ItemBarCodeCollection.Barcode
 
-				shouldBeProcessed, err := handleCheckIfSapUpdateTimeIsNewer(itemData, FMCGProductsStatusTimes, caseData.GTIN)
-				if err != nil {
-					return fmt.Errorf("error checking if case should be processed by comparing update times for GTIN:%v\n error:%v", ItemBarCodeCollection.Barcode, err)
-				}
-
-				if !shouldBeProcessed {
-					continue
-				}
-
 				caseData, err = MapCaseData(caseData, itemData, UnitGTIN)
 				if err != nil {
 					return fmt.Errorf("error mapping the case. GTIN: %v \nError: %v", caseData.GTIN, err)
@@ -107,6 +72,21 @@ func MapData() error {
 				if err != nil {
 					return fmt.Errorf("error posting the case to FMCG. GTIN: %v \nError: %v", caseData.GTIN, err)
 				}
+			}
+		}
+	}
+
+	// time.Sleep(30 * time.Minute)
+
+	for _, itemData := range SapItemsData.Value {
+		for _, ItemBarCodeCollection := range itemData.ItemBarCodeCollection {
+			var identifierData fmcg_api_wrapper.FMCGIdentifierData
+			identifierData.GTIN = "0" + ItemBarCodeCollection.Barcode
+			identifierData.TargetMarketCode = "208"
+
+			err := fmcg_api_wrapper.GetProductStatusAndSetStatusInSAP(identifierData, itemData.ItemCode)
+			if err != nil {
+				return fmt.Errorf("error getting the product status from FMCG and setting it in SAP while running through everything. GTIN: %v \nError: %v", identifierData.GTIN, err)
 			}
 		}
 	}

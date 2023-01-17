@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"gs1_syncer/sap_api_wrapper"
+	"gs1_syncer/teams_notifier"
 	"gs1_syncer/utils"
 	"log"
 	"time"
@@ -19,7 +20,7 @@ func main() {
 
 	err = utils.MapData()
 	if err != nil {
-		fmt.Println(err)
+		teams_notifier.SendUnknownErrorToTeams(err)
 	}
 
 	sap_api_wrapper.SapApiPostLogout()

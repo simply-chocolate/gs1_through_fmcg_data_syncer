@@ -2,6 +2,7 @@ package fmcg_api_wrapper
 
 import (
 	"fmt"
+	"gs1_syncer/teams_notifier"
 )
 
 type FmcgProductBodyBaseItem struct {
@@ -27,8 +28,8 @@ type FmcgProductBodyBaseItem struct {
 
 	IsOrderingUnit                bool   `json:"D8271"` // [TRUE, FALSE] (True for cases and displays, False for BASE_UNIT)
 	UnitOfMeasure                 string `json:"D8276"` // [BASE_UNIT_OR_EACH, CASE, PALLET, DISPLAY_SHIPPER] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=TradeItemUnitDescriptorCodeList.da
-	ShelfLifeFromArrivalInDays    int    `json:"D8283"` // SAP FIELD: U_BOYX_Holdbarhed_Kunde
-	ShelfLifeFromProductionInDays int    `json:"D8284"` // SAP FIELD: U_BOYX_Holdbarhed
+	ShelfLifeFromArrivalInDays    int    `json:"D8283"` //
+	ShelfLifeFromProductionInDays int    `json:"D8284"` //
 	IsQuantityOrPriceVarying      bool   `json:"D8297"` // [TRUE, FALSE]
 	DangerousContent              string `json:"D8030"` // [NOT_APPLICABLE, TRUE, FALSE, UNSPECIFIED] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NonBinaryLogicEnumerationCodeList.da
 	RelevantForPriceComparison    string `json:"D8019"` // [NOT_APPLICABLE, TRUE, FALSE, UNSPECIFIED] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NonBinaryLogicEnumerationCodeList.da
@@ -58,33 +59,33 @@ type FmcgProductBodyBaseItem struct {
 	//	List of Allergens and their codes - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=AllergenTypeCodeList.da
 	// 	List of Containment types - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=AllergenTypeCodeList.da
 	AllergenGluten                           string `json:"D8166_1"`  // AW
-	ContainmentLevelGluten                   string `json:"D8170_1"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_gluten
+	ContainmentLevelGluten                   string `json:"D8170_1"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenCrustacea                        string `json:"D8166_2"`  // AC (Krebsdyr)
-	ContainmentLevelCrustacea                string `json:"D8170_2"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_Krebsdyr
+	ContainmentLevelCrustacea                string `json:"D8170_2"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenEgg                              string `json:"D8166_3"`  // AE
-	ContainmentLevelEgg                      string `json:"D8170_3"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_aag
+	ContainmentLevelEgg                      string `json:"D8170_3"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenFish                             string `json:"D8166_4"`  // AF
-	ContainmentLevelFish                     string `json:"D8170_4"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_fisk
+	ContainmentLevelFish                     string `json:"D8170_4"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenPeanut                           string `json:"D8166_5"`  // AP
-	ContainmentLevelPeanut                   string `json:"D8170_5"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_JN
+	ContainmentLevelPeanut                   string `json:"D8170_5"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenSoy                              string `json:"D8166_6"`  // AY
-	ContainmentLevelSoy                      string `json:"D8170_6"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_soja
+	ContainmentLevelSoy                      string `json:"D8170_6"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenMilk                             string `json:"D8166_7"`  // AM
-	ContainmentLevelMilk                     string `json:"D8170_7"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_ML
+	ContainmentLevelMilk                     string `json:"D8170_7"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenAlmonds                          string `json:"D8166_8"`  // SA
-	ContainmentLevelAlmonds                  string `json:"D8170_8"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_mandel
+	ContainmentLevelAlmonds                  string `json:"D8170_8"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenHazelnut                         string `json:"D8166_9"`  // SH
-	ContainmentLevelHazelnut                 string `json:"D8170_9"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_hassel
+	ContainmentLevelHazelnut                 string `json:"D8170_9"`  // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenWalnut                           string `json:"D8166_10"` // SW
-	ContainmentLevelWalnut                   string `json:"D8170_10"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_val
+	ContainmentLevelWalnut                   string `json:"D8170_10"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenCashew                           string `json:"D8166_11"` // SC
-	ContainmentLevelCashew                   string `json:"D8170_11"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_Cashe
+	ContainmentLevelCashew                   string `json:"D8170_11"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenPecan                            string `json:"D8166_12"` // SP
-	ContainmentLevelPecan                    string `json:"D8170_12"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_Pekan
+	ContainmentLevelPecan                    string `json:"D8170_12"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenBrazilNut                        string `json:"D8166_13"` // SR (Paranød)
-	ContainmentLevelBrazilNut                string `json:"D8170_13"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_peka
+	ContainmentLevelBrazilNut                string `json:"D8170_13"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenPistachio                        string `json:"D8166_14"` // ST
-	ContainmentLevelPistachio                string `json:"D8170_14"` // [FREE_FROM, CONTAINS, MAY_CONTAIN] SAP FIELD: U_BOYX_Pistacie
+	ContainmentLevelPistachio                string `json:"D8170_14"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenQueenslandNut                    string `json:"D8166_15"` // SQ
 	ContainmentLevelQueenslandNut            string `json:"D8170_15"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 	AllergenCelery                           string `json:"D8166_16"` // BC
@@ -103,40 +104,39 @@ type FmcgProductBodyBaseItem struct {
 	ContainmentLevelNuts                     string `json:"D8170_22"` // [FREE_FROM, CONTAINS, MAY_CONTAIN]
 
 	// 	Nutritional Information
-	EnergyInkJ                        string `json:"D8175-UNPREPARED"`   // SAP FIELD: U_BOYX_EnergiK
-	EnergyInKcal                      string `json:"D8171-UNPREPARED"`   // SAP FIELD: U_BOYX_Energi
+	EnergyInkJ                        string `json:"D8175-UNPREPARED"`   //
+	EnergyInKcal                      string `json:"D8171-UNPREPARED"`   //
 	EnergyInKcalPrecision             string `json:"D8172-UNPREPARED"`   //	[APPROXIMATELY, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementPrecisionCodeList.da
 	PreparationState                  string `json:"D8173"`              // [UNPREPARED, PREPARED]
 	NutritionalReferenceValue         int    `json:"D8187-UNPREPARED"`   // 100
 	NutritionalReferenceUOM           string `json:"D8188-UNPREPARED"`   // [GRM, ...] https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
 	NutritionalFat                    string `json:"D8181-UNPREPARED_1"` // [FAT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NutrientTypeCodeList.da
 	NutritionalFatPrecision           string `json:"D8182-UNPREPARED_1"` //	[APPROXIMATELY, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementPrecisionCodeList.da
-	NutritionalFatValue               string `json:"D8183-UNPREPARED_1"` // SAP FIELD: U_BOYX_fedt
+	NutritionalFatValue               string `json:"D8183-UNPREPARED_1"` //
 	NutritionalFatUOM                 string `json:"D8184-UNPREPARED_1"` //	[GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
 	NutritionalFattyAcids             string `json:"D8181-UNPREPARED_2"` // [FASAT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NutrientTypeCodeList.da
 	NutritionalFattyAcidsPrecision    string `json:"D8182-UNPREPARED_2"` //	[APPROXIMATELY, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementPrecisionCodeList.da
-	NutritionalFattyAcidsValue        string `json:"D8183-UNPREPARED_2"` // SAP FIELD: U_BOYX_fedtsyre
+	NutritionalFattyAcidsValue        string `json:"D8183-UNPREPARED_2"` //
 	NutritionalFattyUOM               string `json:"D8184-UNPREPARED_2"` // [GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
 	NutritionalCarboHydrates          string `json:"D8181-UNPREPARED_3"` // [CHOAVL, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NutrientTypeCodeList.da
 	NutritionalCarboHydratesPrecision string `json:"D8182-UNPREPARED_3"` // [APPROXIMATELY, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementPrecisionCodeList.da
-	NutritionalCarboHydratesValue     string `json:"D8183-UNPREPARED_3"` // SAP FIELD: U_BOYX_Kulhydrat
+	NutritionalCarboHydratesValue     string `json:"D8183-UNPREPARED_3"` //
 	NutritionalCarboHydratesUOM       string `json:"D8184-UNPREPARED_3"` // [GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
 	NutritionalSugar                  string `json:"D8181-UNPREPARED_4"` // [SUGAR-, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NutrientTypeCodeList.da
 	NutritionalSugarPrecision         string `json:"D8182-UNPREPARED_4"` // [APPROXIMATELY, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementPrecisionCodeList.da
-	NutritionalSugarValue             string `json:"D8183-UNPREPARED_4"` // SAP FIELD: U_BOYX_sukkerarter
+	NutritionalSugarValue             string `json:"D8183-UNPREPARED_4"` //
 	NutritionalSugarUOM               string `json:"D8184-UNPREPARED_4"` // [GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
 	NutritionalProtein                string `json:"D8181-UNPREPARED_5"` // [PRO-, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NutrientTypeCodeList.da
 	NutritionalProteinPrecision       string `json:"D8182-UNPREPARED_5"` // [APPROXIMATELY, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementPrecisionCodeList.da
-	NutritionalProteinValue           string `json:"D8183-UNPREPARED_5"` // SAP FIELD: U_BOYX_Protein
+	NutritionalProteinValue           string `json:"D8183-UNPREPARED_5"` //
 	NutritionalProteinUOM             string `json:"D8184-UNPREPARED_5"` // [GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
 	NutritionalSalt                   string `json:"D8181-UNPREPARED_6"` // [SALTEQ, NACL, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NutrientTypeCodeList.da
 	NutritionalSaltPrecision          string `json:"D8182-UNPREPARED_6"` // [APPROXIMATELY, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementPrecisionCodeList.da
-	NutritionalSaltValue              string `json:"D8183-UNPREPARED_6"` // SAP FIELD: U_BOYX_salt
+	NutritionalSaltValue              string `json:"D8183-UNPREPARED_6"` //
 	NutritionalSaltUOM                string `json:"D8184-UNPREPARED_6"` // [GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
 
-	// TODO: Lav opsætning i SAP der kan håndtere at vi skriver ingrediensliste ind på forskellige sprog (og får dem ud af SAP også)
-	// Man kunne også lave noget logik på at spille ingredienslisten på en specifik karatker, så skal vi bare have lavet noget logik på dét.
-	ListOfIngredientsDA             string `json:"D8179_1"` // SAP FIELD: U_BOYX_Ingredienser
+	// TODO: Edit the setup in SAP to be compatible with list of ingredients on multiple languages, and be able to pull out the data in multiple languages.
+	ListOfIngredientsDA             string `json:"D8179_1"` //
 	ListOfIngredientsLanguageCodeDA string `json:"D8180_1"` // da (must be non-capitalized)
 
 	//	General Information
@@ -187,25 +187,21 @@ func FMCGApiPostBaseItem(ItemInfo FmcgProductBodyBaseItem, count int) error {
 
 	response := resp.Result().(*FmcgProductPostResult)
 
-	for _, validationError := range response.ValidationErrors {
-		fmt.Println("Validation Errors for baseItem with GTIN: " + ItemInfo.GTIN)
-		fmt.Println("fieldId:", validationError.FieldId)
-		fmt.Println("fieldLabel:", validationError.FieldLabel)
-		fmt.Println("message:", validationError.Message)
-		fmt.Println("messageType:", validationError.MessageType)
-		fmt.Println("________________")
-	}
-
-	if len(response.ValidationErrors) == 0 {
-		var SendToGS1Data FMCGIdentifierData
-		SendToGS1Data.GTIN = ItemInfo.GTIN
-		SendToGS1Data.TargetMarketCode = ItemInfo.TargetMarketCode
-
-		err = SendGTINToGS1(SendToGS1Data, ItemInfo.ItemCode)
-		if err != nil {
-			return fmt.Errorf("error sending product with GTIN:%v to GS1. \nError:%v", SendToGS1Data.GTIN, err)
+	if len(response.ValidationErrors) != 0 {
+		for _, validationError := range response.ValidationErrors {
+			if validationError.FieldId == "D8271" {
+				continue
+			}
+			err = teams_notifier.SendValidationErrorToTeams(ItemInfo.GTIN,
+				validationError.FieldId,
+				validationError.FieldLabel,
+				validationError.Message,
+				validationError.MessageType,
+			)
+			if err != nil {
+				return err
+			}
 		}
-
 	}
 
 	return nil

@@ -39,7 +39,7 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 	mixCaseData.ItemNameLanguageCodeDA = "da"
 	mixCaseData.FunctionalProductNameDA = itemData.FunctionalProductNameDA
 	mixCaseData.FunctionalProductNameLanguageCodeDA = "da"
-	mixCaseData.UnitOfMeasure = "CASE"
+	mixCaseData.UnitOfMeasure = "DISPLAY_SHIPPER"
 	mixCaseData.IsOrderingUnit = true
 	mixCaseData.IsPackageSalesReady = "FALSE"
 
@@ -69,7 +69,7 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 	// Base Units
 	mixCaseContent, err := MapBaseUnitsForMixCase(mixCaseData, itemData)
 	if err != nil {
-		return fmcg_api_wrapper.FmcgProductBodyMixCase{}, []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error mapping baseunits to FMCG Format. GTIN: %v\nerr: %v", mixCaseData.GTIN, err)
+		return fmcg_api_wrapper.FmcgProductBodyMixCase{}, []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error mapping base units to FMCG Format. GTIN: %v\nerr: %v", mixCaseData.GTIN, err)
 	}
 
 	return mixCaseData, mixCaseContent, err

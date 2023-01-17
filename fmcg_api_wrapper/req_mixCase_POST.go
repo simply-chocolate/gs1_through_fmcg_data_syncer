@@ -2,7 +2,7 @@ package fmcg_api_wrapper
 
 import (
 	"fmt"
-	"strconv"
+	"gs1_syncer/teams_notifier"
 )
 
 type FmcgProductBodyMixCase struct {
@@ -75,51 +75,66 @@ func FMCGApiPostMixCase(mixCaseInfo FmcgProductBodyMixCase, mixCaseContent []FMC
 		return resp.Err
 	}
 
-	// Iterate the mixCaseContent and post each baseItem
-	for i, baseItem := range mixCaseContent {
-		err = FMCGApiPostMixCaseContent(baseItem, mixCaseInfo.GTIN, mixCaseInfo.TargetMarketCode, i+1)
-		if err != nil {
-			return err
-		}
+	// Iterate the mixCaseContent and create a map with all the base items
+	body := map[string]interface{}{
+		"D8165": mixCaseInfo.GTIN,
+		"D8255": mixCaseInfo.TargetMarketCode,
 	}
-	// TODO: Vi skal have smidt længden af validation errors tilbage så vi kan tjekke om den er = 0 ligesom når vi poster baseitem og case.
+	for i, baseItem := range mixCaseContent {
+		body[fmt.Sprintf("D8270_%v", i+1)] = fmt.Sprintf("%v", baseItem.UnitsPerCase)
+		body[fmt.Sprintf("D8249_%v", i+1)] = baseItem.UnitGTINItem
+	}
 
-	return nil
-}
-
-func FMCGApiPostMixCaseContent(mixCaseContentInfo FMCGMixCaseContentBaseItem, mixCaseGTIN string, TargetMarketCode string, count int) error {
-	fmt.Printf("Posting mixCaseContentInfo: %v\n", mixCaseContentInfo)
-	fmt.Println(count)
-	resp, err := GetFMCGApiBaseClient().
-		DevMode().
-		R().
-		EnableDump().
-		SetResult(FmcgProductPostResult{}).
-		SetBody(map[string]interface{}{
-			"D8165":                        mixCaseGTIN,
-			"D8255":                        TargetMarketCode,
-			"D8270_" + strconv.Itoa(count): mixCaseContentInfo.UnitsPerCase,
-			"D8249_" + strconv.Itoa(count): mixCaseContentInfo.UnitGTINItem,
-		}).
-		Post("")
+	response, err := FMCGApiPostMixCaseContent(body, 0)
 	if err != nil {
 		return err
 	}
 
-	if resp.IsError() {
-		fmt.Printf("resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
-		return resp.Err
-	}
+	if len(response.ValidationErrors) != 0 {
+		for _, validationError := range response.ValidationErrors {
+			err = teams_notifier.SendValidationErrorToTeams(mixCaseInfo.GTIN,
+				validationError.FieldId,
+				validationError.FieldLabel,
+				validationError.Message,
+				validationError.MessageType,
+			)
+			if err != nil {
+				return err
+			}
+		}
+	} else {
+		var SendToGS1Data FMCGIdentifierData
+		SendToGS1Data.GTIN = mixCaseInfo.GTIN
+		SendToGS1Data.TargetMarketCode = mixCaseInfo.TargetMarketCode
 
-	response := resp.Result().(*FmcgProductPostResult)
-	for _, validationError := range response.ValidationErrors {
-		fmt.Println("Validation Errors for baseItem with GTIN: " + mixCaseGTIN)
-		fmt.Println("fieldId:", validationError.FieldId)
-		fmt.Println("fieldLabel:", validationError.FieldLabel)
-		fmt.Println("message:", validationError.Message)
-		fmt.Println("messageType:", validationError.MessageType)
-		fmt.Println("________________")
+		err = SendGTINToGS1(SendToGS1Data, mixCaseInfo.ItemCode)
+		if err != nil {
+			return fmt.Errorf("error sending product with GTIN:%v to GS1. \nError:%v", SendToGS1Data.GTIN, err)
+		}
 	}
 
 	return nil
+}
+
+func FMCGApiPostMixCaseContent(body map[string]interface{}, count int) (*FmcgProductPostResult, error) {
+
+	resp, err := GetFMCGApiBaseClient().
+		//DevMode().
+		R().
+		EnableDump().
+		SetResult(FmcgProductPostResult{}).
+		SetBody(body).
+		Post("")
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.IsError() {
+		fmt.Printf("resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+		return nil, fmt.Errorf("error posting mixCaseContentInfo: %v", body["D8165"])
+	}
+
+	response := resp.Result().(*FmcgProductPostResult)
+
+	return response, nil
 }
