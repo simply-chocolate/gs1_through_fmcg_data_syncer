@@ -18,6 +18,7 @@ func MapLogisticalInformationCase(caseData fmcg_api_wrapper.FmcgProductBodyCase,
 	caseData.NetWeightUoM = "GRM"
 	caseData.GrossWeight = itemData.CaseGrossWeight
 	caseData.GrossWeightUoM = "GRM"
+
 	caseData.PalletGrossWeight = itemData.PalletGrossWeight
 	caseData.PalletGrossWeightUoM = "GRM"
 	caseData.PalletHeight = itemData.PalletHeight
@@ -26,7 +27,7 @@ func MapLogisticalInformationCase(caseData fmcg_api_wrapper.FmcgProductBodyCase,
 	caseData.PalletWidthUoM = "MMT"
 	caseData.PalletDepth = itemData.PalletDepth
 	caseData.PalletDepthUoM = "MMT"
-	caseData.PalletLayerAmount = itemData.PalletLayerAmount
+	caseData.LayersPerPallet = itemData.LayersPerPallet
 	caseData.PalletUnitsPerLayer = itemData.PalletUnitsPerLayer
 	caseData.PalletSendingUnitAmount = itemData.PalletSendingUnitAmount
 

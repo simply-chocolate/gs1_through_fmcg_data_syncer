@@ -51,6 +51,19 @@ type FmcgProductBodyMixCase struct {
 	Width          int    `json:"D8267"`   //
 	WidthUOM       string `json:"D8268"`   // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.daWidth
 	PackagingType  string `json:"D8275_1"` // [WRP, BX, JR] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=PackageTypeCodeList.da
+
+	PalletGrossWeight    int    `json:"D8080"` //
+	PalletGrossWeightUoM string `json:"D8081"` // [GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
+	PalletHeight         int    `json:"D8083"` //
+	PalletHeightUoM      string `json:"D8084"` // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
+	PalletDepth          int    `json:"D8085"` //
+	PalletDepthUoM       string `json:"D8086"` // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
+	PalletWidth          int    `json:"D8087"` //
+	PalletWidthUoM       string `json:"D8088"` // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
+
+	LayersPerPallet         int `json:"D8079"`
+	PalletSendingUnitAmount int `json:"D8078"`
+	PalletUnitsPerLayer     int `json:"D3438"`
 }
 
 type FMCGMixCaseContentBaseItem struct {
@@ -119,7 +132,7 @@ func FMCGApiPostMixCase(mixCaseInfo FmcgProductBodyMixCase, mixCaseContent []FMC
 func FMCGApiPostMixCaseContent(body map[string]interface{}, count int) (*FmcgProductPostResult, error) {
 
 	resp, err := GetFMCGApiBaseClient().
-		//DevMode().
+		DevMode().
 		R().
 		EnableDump().
 		SetResult(FmcgProductPostResult{}).

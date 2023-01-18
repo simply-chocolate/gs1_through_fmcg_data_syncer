@@ -77,7 +77,7 @@ type SapApiItemsData struct {
 	PalletDepth             int `json:"U_BOYX_dybde_p"`
 	PalletNetWeight         int `json:"U_BOYX_netto_p"`
 	PalletGrossWeight       int `json:"U_BOYX_brutto_p"`
-	PalletLayerAmount       int `json:"U_BOYX_kolli_p"`
+	LayersPerPallet         int `json:"U_BOYX_kolli_p"`
 	PalletUnitsPerLayer     int `json:"U_BOYX_antalpalle_p"`
 	PalletSendingUnitAmount int `json:"U_BOYX_kollipalle_p"`
 

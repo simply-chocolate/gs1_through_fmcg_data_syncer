@@ -60,7 +60,7 @@ type FmcgProductBodyCase struct {
 	PalletWidth          int    `json:"D8087"` //
 	PalletWidthUoM       string `json:"D8088"` // [MMT, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
 
-	PalletLayerAmount       int `json:"D8079"`
+	LayersPerPallet         int `json:"D8079"`
 	PalletSendingUnitAmount int `json:"D8078"`
 	PalletUnitsPerLayer     int `json:"D3438"`
 

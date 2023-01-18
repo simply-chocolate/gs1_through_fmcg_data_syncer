@@ -20,6 +20,19 @@ func MapLogisticalInformationMixCase(mixCaseData fmcg_api_wrapper.FmcgProductBod
 	mixCaseData.NetWeightUoM = "GRM"
 	mixCaseData.GrossWeight = itemData.CaseGrossWeight
 	mixCaseData.GrossWeightUoM = "GRM"
+
+	mixCaseData.PalletGrossWeight = itemData.PalletGrossWeight
+	mixCaseData.PalletGrossWeightUoM = "GRM"
+	mixCaseData.PalletHeight = itemData.PalletHeight
+	mixCaseData.PalletHeightUoM = "MMT"
+	mixCaseData.PalletWidth = itemData.PalletWidth
+	mixCaseData.PalletWidthUoM = "MMT"
+	mixCaseData.PalletDepth = itemData.PalletDepth
+	mixCaseData.PalletDepthUoM = "MMT"
+	mixCaseData.LayersPerPallet = itemData.LayersPerPallet
+	mixCaseData.PalletUnitsPerLayer = itemData.PalletUnitsPerLayer
+	mixCaseData.PalletSendingUnitAmount = itemData.PalletSendingUnitAmount
+
 	return mixCaseData
 }
 
@@ -54,8 +67,10 @@ func MapBaseUnitsForMixCase(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase,
 		fmt.Println("Finished adding baseunits to mixcase. BaseUnit:", baseUnit.UnitGTINItem, "UnitsPerCase:", baseUnit.UnitsPerCase, "ItemCode:", itemData.ItemCode)
 
 		baseUnits = append(baseUnits, baseUnit)
+		fmt.Printf("UoMGroupEntry = 40. baseUnits: %v\n", baseUnits)
 
 	} else {
+		fmt.Println("Reach the else in mapping baseunits")
 		SapMixCaseContent, err := GetMixCaseItemsFromSap(itemData.ItemCode)
 		if err != nil {
 			fmt.Println("Couldn't get Invoices from SAP. Sleeping 10 minutes")
@@ -92,12 +107,14 @@ func MapBaseUnitsForMixCase(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase,
 						baseUnit.UnitGTINItem = "0" + barcodeCollection.Barcode
 						baseUnit.UnitsPerCase = contentItem.Quantity
 						baseUnits = append(baseUnits, baseUnit)
+						fmt.Printf("UoMGroupEntry != 40. baseUnits: %v\n", baseUnits)
 
 					}
 				}
 			}
 		}
 	}
+	fmt.Println(baseUnits)
 
 	return baseUnits, nil
 }
