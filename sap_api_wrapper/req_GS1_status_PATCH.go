@@ -11,6 +11,8 @@ type GS1StatusAndResponseBody struct {
 type GS1StatusAndResponseResult struct {
 }
 
+// TODO: Add field "U_CCF_FMCG_UpdateTime" in SAP so we can track the last time we updated the item
+
 // Takes the Gs1Status and Gs1 Response and updates the item in SAP
 func SetGs1StatusAndResponse(itemCode string, GS1Status string, GS1Response string) error {
 	var body GS1StatusAndResponseBody
