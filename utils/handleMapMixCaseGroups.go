@@ -88,11 +88,32 @@ func MapBaseUnitsForMixCase(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase,
 			}
 
 			for _, contentItemData := range mixContentItemInfo.Value {
+				// We check if length of ItemBarCodeCollection is 0, because if it is, we need to use a different field for the GTIN.
+				if len(contentItemData.ItemBarCodeCollection) == 0 {
+					var identifierData fmcg_api_wrapper.FMCGIdentifierData
+					identifierData.GTIN = contentItemData.BarCodeForHF
+					identifierData.TargetMarketCode = "208"
+
+					productStatus, err := fmcg_api_wrapper.FMCGApiGetProductStatus(identifierData, 0)
+					if err != nil {
+						return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error getting content item from FMCG. If the status is 404 the it has not been synced yet. ItemCode:%v BarCode:%v\n err:%v", contentItemData.ItemCode, contentItemData.BarCodeForHF, err)
+					}
+					if productStatus.Body.Gs1Status != "OK" {
+						return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf(" ItemCode:%v BarCode:%v has not been synced all the way to GS1 with OK. Check GS1 Status: %v\n err:%v", contentItemData.ItemCode, contentItemData.BarCodeForHF, productStatus.Body.Gs1Status, err)
+					}
+
+					var baseUnit fmcg_api_wrapper.FMCGMixCaseContentBaseItem
+					baseUnit.UnitGTINItem = "0" + contentItemData.BarCodeForHF
+					baseUnit.UnitsPerCase = contentItem.Quantity
+					baseUnits = append(baseUnits, baseUnit)
+
+				}
+
 				for _, barcodeCollection := range contentItemData.ItemBarCodeCollection {
 					// We use the baseItem as thats the amount on the Bill of Materials
 					if barcodeCollection.UoMEntry == 1 {
 						var identifierData fmcg_api_wrapper.FMCGIdentifierData
-						identifierData.GTIN = barcodeCollection.Barcode
+						identifierData.GTIN = "0" + barcodeCollection.Barcode
 						identifierData.TargetMarketCode = "208"
 
 						productStatus, err := fmcg_api_wrapper.FMCGApiGetProductStatus(identifierData, 0)
@@ -107,7 +128,6 @@ func MapBaseUnitsForMixCase(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase,
 						baseUnit.UnitGTINItem = "0" + barcodeCollection.Barcode
 						baseUnit.UnitsPerCase = contentItem.Quantity
 						baseUnits = append(baseUnits, baseUnit)
-						fmt.Printf("UoMGroupEntry != 40. baseUnits: %v\n", baseUnits)
 
 					}
 				}

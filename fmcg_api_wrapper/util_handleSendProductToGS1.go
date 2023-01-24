@@ -26,11 +26,18 @@ func GetProductStatusAndSetStatusInSAP(identifierData FMCGIdentifierData, itemCo
 	}
 
 	gs1Resp := ""
-	for _, gs1Response := range resp.Body.Gs1Response {
-		gs1Resp += gs1Response
+	gs1Status := ""
+
+	if resp.Body.FmcgProductStatus == "NOT_FOUND" {
+		gs1Status = "NEVER_SENT"
+	} else {
+		gs1Status = resp.Body.Gs1Status
+		for _, gs1Response := range resp.Body.Gs1Response {
+			gs1Resp += gs1Response
+		}
 	}
 
-	err = sap_api_wrapper.SetGs1StatusAndResponse(itemCode, resp.Body.Gs1Status, gs1Resp)
+	err = sap_api_wrapper.SetGs1StatusAndResponse(itemCode, gs1Status, gs1Resp)
 	if err != nil {
 		return err
 	}

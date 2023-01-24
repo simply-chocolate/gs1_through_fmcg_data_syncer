@@ -15,6 +15,7 @@ type SapApiMixCaseContent struct {
 		Barcode  string `json:"Barcode"`
 		UoMEntry int    `json:"UoMEntry"`
 	} `json:"ItemBarCodeCollection"`
+	BarCodeForHF string `json:"U_BOYX_EAN"`
 }
 
 type SapApiGetMixCaseContentReturn struct {

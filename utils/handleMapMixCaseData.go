@@ -39,6 +39,7 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 	mixCaseData.ItemNameLanguageCodeDA = "da"
 	mixCaseData.FunctionalProductNameDA = itemData.FunctionalProductNameDA
 	mixCaseData.FunctionalProductNameLanguageCodeDA = "da"
+
 	mixCaseData.UnitOfMeasure = "DISPLAY_SHIPPER"
 	mixCaseData.IsOrderingUnit = true
 	mixCaseData.IsPackageSalesReady = "FALSE"

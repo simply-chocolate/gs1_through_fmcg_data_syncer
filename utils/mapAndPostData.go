@@ -20,58 +20,65 @@ func MapData() error {
 		}
 	}
 
-	var mixCases []sap_api_wrapper.SapApiItemsData
+	var mixDisplays []sap_api_wrapper.SapApiItemsData
 
+	// Firstly we iritate through all the items and map the baseItems and cases and send them to FMCG
 	for _, itemData := range SapItemsData.Value {
 		var UnitGTIN string
 
-		// If the item is a mixDisplay we need to append it to the mixCases list and handle it later
+		// If the item is a mixDisplay we need to append it to the mixDisplays list and handle it later
 		if itemData.UoMGroupEntry == 42 || itemData.TypeOfProduct == "KampagneDisplay" {
 			for _, ItemBarCodeCollection := range itemData.ItemBarCodeCollection {
 				if ItemBarCodeCollection.UoMEntry == 1 {
 					return fmt.Errorf("error: UoMEntry is 1 for a mixDisplay. GTIN: %v", ItemBarCodeCollection.Barcode)
 				} else if ItemBarCodeCollection.UoMEntry == 2 {
-					mixCases = append(mixCases, itemData)
+					mixDisplays = append(mixDisplays, itemData)
 				}
 			}
 		} else {
-			for _, ItemBarCodeCollection := range itemData.ItemBarCodeCollection {
-				if ItemBarCodeCollection.UoMEntry == 1 {
-					UnitGTIN = "0" + ItemBarCodeCollection.Barcode
-					var baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem
-					baseItemData.GTIN = "0" + ItemBarCodeCollection.Barcode
+			if len(itemData.ItemBarCodeCollection) == 1 && itemData.ItemBarCodeCollection[0].UoMEntry == 2 {
+				mixDisplays = append(mixDisplays, itemData)
+			} else {
+				for _, ItemBarCodeCollection := range itemData.ItemBarCodeCollection {
 
-					baseItemData, err = MapBaseItemData(baseItemData, itemData)
-					if err != nil {
-						return fmt.Errorf("error mapping the baseItem. GTIN: %v \nError: %v", baseItemData.GTIN, err)
-					}
+					if ItemBarCodeCollection.UoMEntry == 1 {
+						UnitGTIN = "0" + ItemBarCodeCollection.Barcode
+						var baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem
+						baseItemData.GTIN = "0" + ItemBarCodeCollection.Barcode
 
-					err = fmcg_api_wrapper.FMCGApiPostBaseItem(baseItemData, 0)
-					if err != nil {
-						return err
-					}
+						baseItemData, err = MapBaseItemData(baseItemData, itemData)
+						if err != nil {
+							return fmt.Errorf("error mapping the baseItem. GTIN: %v \nError: %v", baseItemData.GTIN, err)
+						}
 
-				} else if ItemBarCodeCollection.UoMEntry == 2 {
-					var caseData fmcg_api_wrapper.FmcgProductBodyCase
-					caseData.GTIN = "0" + ItemBarCodeCollection.Barcode
+						err = fmcg_api_wrapper.FMCGApiPostBaseItem(baseItemData, 0)
+						if err != nil {
+							return err
+						}
 
-					caseData, err = MapCaseData(caseData, itemData, UnitGTIN)
-					if err != nil {
-						return fmt.Errorf("error mapping the case. GTIN: %v \nError: %v", caseData.GTIN, err)
-					}
+					} else if ItemBarCodeCollection.UoMEntry == 2 {
+						var caseData fmcg_api_wrapper.FmcgProductBodyCase
+						caseData.GTIN = "0" + ItemBarCodeCollection.Barcode
 
-					err = fmcg_api_wrapper.FMCGApiPostCase(caseData, 0)
-					if err != nil {
-						return fmt.Errorf("error posting the case to FMCG. GTIN: %v \nError: %v", caseData.GTIN, err)
+						caseData, err = MapCaseData(caseData, itemData, UnitGTIN)
+						if err != nil {
+							return fmt.Errorf("error mapping the case. GTIN: %v \nError: %v", caseData.GTIN, err)
+						}
+
+						err = fmcg_api_wrapper.FMCGApiPostCase(caseData, 0)
+						if err != nil {
+							return fmt.Errorf("error posting the case to FMCG. GTIN: %v \nError: %v", caseData.GTIN, err)
+						}
 					}
 				}
 			}
 		}
 	}
 
-	time.Sleep(5 * time.Minute)
+	fmt.Printf("Sleeping 5 minutes from now. %v\n", time.Now())
+	time.Sleep(30 * time.Minute)
 
-	// First we go through each item and check the GS1 status and set it in SAP
+	// Secondly we go through each item and check the GS1 status and set it in SAP
 	for _, itemData := range SapItemsData.Value {
 		for _, ItemBarCodeCollection := range itemData.ItemBarCodeCollection {
 			var identifierData fmcg_api_wrapper.FMCGIdentifierData
@@ -97,7 +104,7 @@ func MapData() error {
 	}
 
 	// Then we go through each mixDisplay and map the data
-	for _, itemData := range mixCases {
+	for _, itemData := range mixDisplays {
 		for _, ItemBarCodeCollection := range itemData.ItemBarCodeCollection {
 			if ItemBarCodeCollection.UoMEntry == 1 {
 				return fmt.Errorf("error: UoMEntry is 1 for a mixDisplay. GTIN: %v", ItemBarCodeCollection.Barcode)
@@ -118,10 +125,11 @@ func MapData() error {
 		}
 	}
 
-	time.Sleep(5 * time.Minute)
+	fmt.Printf("Sleeping 5 minutes from now. Round 2 %v\n", time.Now())
+	time.Sleep(30 * time.Minute)
 
-	// Then we go through each of the mixCases and check the GS1 status and set it in SAP
-	for _, itemData := range mixCases {
+	// Then we go through each of the mixDisplays and check the GS1 status and set it in SAP
+	for _, itemData := range mixDisplays {
 		for _, ItemBarCodeCollection := range itemData.ItemBarCodeCollection {
 			var identifierData fmcg_api_wrapper.FMCGIdentifierData
 			identifierData.GTIN = "0" + ItemBarCodeCollection.Barcode

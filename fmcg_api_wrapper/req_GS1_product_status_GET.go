@@ -27,6 +27,13 @@ func FMCGApiGetProductStatus(FMCGIdentifierData FMCGIdentifierData, count int) (
 	}
 
 	if resp.IsError() {
+		if resp.StatusCode == 404 {
+			return FMCTProductStatusReturn{
+				Body: &FMCGProductStatusResult{
+					FmcgProductStatus: "NOT_FOUND",
+				},
+			}, nil
+		}
 		fmt.Printf("resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
 		return FMCTProductStatusReturn{}, resp.Err
 	}
