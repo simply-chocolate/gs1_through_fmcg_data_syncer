@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemData sap_api_wrapper.SapApiItemsData) (fmcg_api_wrapper.FmcgProductBodyMixCase, []fmcg_api_wrapper.FMCGMixCaseContentBaseItem, error) {
+func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemData sap_api_wrapper.SapApiItemsData) error {
 
 	mixCaseData.DataType = "CORRECT"
 	mixCaseData.DataCarrierTypeCode = "EAN_13"
@@ -46,7 +46,7 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 
 	shelfLifeAsInt, err := strconv.Atoi(itemData.ShelfLifeFromArrivalInDays)
 	if err != nil {
-		return fmcg_api_wrapper.FmcgProductBodyMixCase{}, []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error converting shelfLife to int on mixCaseData. GTIN: %v err: %v", mixCaseData.GTIN, err)
+		return fmt.Errorf("error converting shelfLife to int on mixCaseData. GTIN: %v err: %v", mixCaseData.GTIN, err)
 	}
 	mixCaseData.ShelfLifeFromArrivalInDays = shelfLifeAsInt
 
@@ -60,18 +60,25 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 	// Dates
 	mixCaseData.EffectiveDateTime, err = FormatSapDateToFMCGDate(itemData.EffectiveDateTime)
 	if err != nil {
-		return fmcg_api_wrapper.FmcgProductBodyMixCase{}, []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error converting effectiveDateTime to FMCG Format. err: %v", err)
+		return fmt.Errorf("error converting effectiveDateTime to FMCG Format. err: %v", err)
 	}
 	mixCaseData.StartAvailabilityDateTime, err = FormatSapDateToFMCGDate(itemData.AvailabilityDateTime)
 	if err != nil {
-		return fmcg_api_wrapper.FmcgProductBodyMixCase{}, []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error converting AvailabilityDateTime to FMCG Format. err: %v", err)
+		return fmt.Errorf("error converting AvailabilityDateTime to FMCG Format. err: %v", err)
 	}
 
 	// Base Units
 	mixCaseContent, err := MapBaseUnitsForMixCase(mixCaseData, itemData)
 	if err != nil {
-		return fmcg_api_wrapper.FmcgProductBodyMixCase{}, []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error mapping base units to FMCG Format. GTIN: %v\nerr: %v", mixCaseData.GTIN, err)
+		return fmt.Errorf("error mapping base units to FMCG Format. GTIN: %v\nerr: %v", mixCaseData.GTIN, err)
 	}
 
-	return mixCaseData, mixCaseContent, err
+	fmt.Printf("mixCaseContent: %v", mixCaseContent)
+
+	err = fmcg_api_wrapper.FMCGApiPostMixCase(mixCaseData, mixCaseContent, 0)
+	if err != nil {
+		return fmt.Errorf("error posting the case to FMCG. GTIN: %v \nError: %v", mixCaseData.GTIN, err)
+	}
+
+	return nil
 }

@@ -20,6 +20,10 @@ func MapData() error {
 		}
 	}
 
+	// TODO: Get all SAP Items that has the U_CCF_GS1_Status set to "SENT" and check their status in FMCG, so we can update the status in SAP
+	// TODO: don't set Sync_GS1 to "Y" if the GS1_Status is "NEVER_SENT", "SENT" or "ERROR"
+	// TODO: Make some handler functions for this
+
 	var mixDisplays []sap_api_wrapper.SapApiItemsData
 
 	// Firstly we iritate through all the items and map the baseItems and cases and send them to FMCG
@@ -75,8 +79,8 @@ func MapData() error {
 		}
 	}
 
-	fmt.Printf("Sleeping 5 minutes from now. %v\n", time.Now())
-	time.Sleep(30 * time.Minute)
+	fmt.Printf("Sleeping 10 minutes from now. %v\n", time.Now())
+	//time.Sleep(1 * time.Minute)
 
 	// Secondly we go through each item and check the GS1 status and set it in SAP
 	for _, itemData := range SapItemsData.Value {
@@ -84,7 +88,6 @@ func MapData() error {
 			var identifierData fmcg_api_wrapper.FMCGIdentifierData
 			identifierData.GTIN = "0" + ItemBarCodeCollection.Barcode
 			identifierData.TargetMarketCode = "208"
-
 			err := fmcg_api_wrapper.GetProductStatusAndSetStatusInSAP(identifierData, itemData.ItemCode)
 			if err != nil {
 				return fmt.Errorf("error getting the product status from FMCG and setting it in SAP while running through everything. GTIN: %v \nError: %v", identifierData.GTIN, err)
@@ -105,6 +108,7 @@ func MapData() error {
 
 	// Then we go through each mixDisplay and map the data
 	for _, itemData := range mixDisplays {
+
 		for _, ItemBarCodeCollection := range itemData.ItemBarCodeCollection {
 			if ItemBarCodeCollection.UoMEntry == 1 {
 				return fmt.Errorf("error: UoMEntry is 1 for a mixDisplay. GTIN: %v", ItemBarCodeCollection.Barcode)
@@ -112,21 +116,16 @@ func MapData() error {
 				var mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase
 				mixCaseData.GTIN = "0" + ItemBarCodeCollection.Barcode
 
-				mixCaseData, mixCaseContent, err := MapMixCaseData(mixCaseData, itemData)
+				err := MapMixCaseData(mixCaseData, itemData)
 				if err != nil {
 					return fmt.Errorf("error mapping the MixCase. GTIN: %v \nError: %v", mixCaseData.GTIN, err)
-				}
-
-				err = fmcg_api_wrapper.FMCGApiPostMixCase(mixCaseData, mixCaseContent, 0)
-				if err != nil {
-					return fmt.Errorf("error posting the case to FMCG. GTIN: %v \nError: %v", mixCaseData.GTIN, err)
 				}
 			}
 		}
 	}
 
-	fmt.Printf("Sleeping 5 minutes from now. Round 2 %v\n", time.Now())
-	time.Sleep(30 * time.Minute)
+	fmt.Printf("Sleeping 10 minutes from now. Round 2 %v\n", time.Now())
+	//time.Sleep(1 * time.Minute)
 
 	// Then we go through each of the mixDisplays and check the GS1 status and set it in SAP
 	for _, itemData := range mixDisplays {

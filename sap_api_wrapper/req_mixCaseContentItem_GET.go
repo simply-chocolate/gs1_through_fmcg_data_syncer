@@ -11,6 +11,7 @@ type SapApiGetMixCaseContentResult struct {
 
 type SapApiMixCaseContent struct {
 	ItemCode              string `json:"ItemCode"`
+	TypeOfProduct         string `json:"U_CCF_Type"`
 	ItemBarCodeCollection []struct {
 		Barcode  string `json:"Barcode"`
 		UoMEntry int    `json:"UoMEntry"`

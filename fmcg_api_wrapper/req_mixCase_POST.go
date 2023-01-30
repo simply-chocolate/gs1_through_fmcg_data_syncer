@@ -103,6 +103,7 @@ func FMCGApiPostMixCase(mixCaseInfo FmcgProductBodyMixCase, mixCaseContent []FMC
 		return err
 	}
 
+	// TODO: Send the body with the error so we can see what went wrong
 	if len(response.ValidationErrors) != 0 {
 		for _, validationError := range response.ValidationErrors {
 			err = teams_notifier.SendValidationErrorToTeams(mixCaseInfo.GTIN,
@@ -130,9 +131,9 @@ func FMCGApiPostMixCase(mixCaseInfo FmcgProductBodyMixCase, mixCaseContent []FMC
 }
 
 func FMCGApiPostMixCaseContent(body map[string]interface{}, count int) (*FmcgProductPostResult, error) {
-
+	fmt.Println("posting mixCaseContentInfo: ", body)
 	resp, err := GetFMCGApiBaseClient().
-		DevMode().
+		//DevMode().
 		R().
 		EnableDump().
 		SetResult(FmcgProductPostResult{}).
