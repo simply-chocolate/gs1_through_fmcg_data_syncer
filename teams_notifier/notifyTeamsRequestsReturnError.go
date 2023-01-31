@@ -5,13 +5,14 @@ import (
 	"os"
 
 	goteamsnotify "github.com/atc0005/go-teams-notify/v2"
+	"github.com/atc0005/go-teams-notify/v2/messagecard"
 )
 
 func SendRequestsReturnErrorToTeams(requestName string, requestType string, response string, responseBody string, api string) {
-	client := goteamsnotify.NewClient()
+	client := goteamsnotify.NewTeamsClient()
 	webhook := os.Getenv("TEAMS_WEBHOOK_URL")
 
-	card := goteamsnotify.NewMessageCard()
+	card := messagecard.NewMessageCard()
 	card.Title = "Request Error"
 	card.Text = fmt.Sprintf("**API:** %s <BR/>"+
 		"**Request Type:** %s<BR/>"+
@@ -22,5 +23,4 @@ func SendRequestsReturnErrorToTeams(requestName string, requestType string, resp
 	if err := client.Send(webhook, card); err != nil {
 		fmt.Println("SendVatCodeErrorToTeams failed to send the error.")
 	}
-
 }

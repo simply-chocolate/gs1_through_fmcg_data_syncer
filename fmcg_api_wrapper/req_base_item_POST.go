@@ -197,6 +197,7 @@ func FMCGApiPostBaseItem(ItemInfo FmcgProductBodyBaseItem, count int) error {
 				validationError.FieldLabel,
 				validationError.Message,
 				validationError.MessageType,
+				fmt.Sprintf("%v", ItemInfo),
 			)
 			if err != nil {
 				return err

@@ -90,11 +90,13 @@ func FMCGApiPostCase(caseInfo FmcgProductBodyCase, count int) error {
 
 	if len(response.ValidationErrors) != 0 {
 		for _, validationError := range response.ValidationErrors {
-			err = teams_notifier.SendValidationErrorToTeams(caseInfo.GTIN,
+			err = teams_notifier.SendValidationErrorToTeams(
+				caseInfo.GTIN,
 				validationError.FieldId,
 				validationError.FieldLabel,
 				validationError.Message,
 				validationError.MessageType,
+				fmt.Sprintf("%v", caseInfo),
 			)
 			if err != nil {
 				return err

@@ -73,8 +73,6 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 		return fmt.Errorf("error mapping base units to FMCG Format. GTIN: %v\nerr: %v", mixCaseData.GTIN, err)
 	}
 
-	fmt.Printf("mixCaseContent: %v", mixCaseContent)
-
 	err = fmcg_api_wrapper.FMCGApiPostMixCase(mixCaseData, mixCaseContent, 0)
 	if err != nil {
 		return fmt.Errorf("error posting the case to FMCG. GTIN: %v \nError: %v", mixCaseData.GTIN, err)

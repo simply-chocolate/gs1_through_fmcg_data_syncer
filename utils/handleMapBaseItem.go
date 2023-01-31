@@ -49,13 +49,13 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 	baseItemData.UnitOfMeasure = "BASE_UNIT_OR_EACH"
 	baseItemData.IsOrderingUnit = false
 
+	baseItemData.ShelfLifeFromProductionInDays = itemData.ShelfLifeFromProductionInDays
 	shelfLifeAsInt, err := strconv.Atoi(itemData.ShelfLifeFromArrivalInDays)
 	if err != nil {
-		return fmcg_api_wrapper.FmcgProductBodyBaseItem{}, fmt.Errorf("error converting shelfLife to int on baseItem. GTIN: %v err: %v", baseItemData.GTIN, err)
+		shelfLifeAsInt = int(float64(baseItemData.ShelfLifeFromProductionInDays) * 0.75)
 	}
 	baseItemData.ShelfLifeFromArrivalInDays = shelfLifeAsInt
 
-	baseItemData.ShelfLifeFromProductionInDays = itemData.ShelfLifeFromProductionInDays
 	baseItemData.IsQuantityOrPriceVarying = false
 	baseItemData.DangerousContent = "FALSE"
 	baseItemData.RelevantForPriceComparison = "FALSE"

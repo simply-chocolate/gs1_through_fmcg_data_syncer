@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gs1_syncer/fmcg_api_wrapper"
 	"gs1_syncer/sap_api_wrapper"
+	"math"
 	"time"
 )
 
@@ -122,7 +123,8 @@ func MapMixCaseContent(
 
 				var baseUnit fmcg_api_wrapper.FMCGMixCaseContentBaseItem
 				baseUnit.UnitGTINItem = "0" + contentItemData.BarCodeForHF
-				baseUnit.UnitsPerCase = contentItem.Quantity
+				baseUnit.UnitsPerCase = math.Floor(contentItem.Quantity * float64(itemData.UnitsPerCase))
+
 				baseUnits = append(baseUnits, baseUnit)
 			}
 
