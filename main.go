@@ -16,7 +16,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	fmt.Printf("%v Started the Script \n", time.Now().Format("2006-01-02 15:04:05"))
+	fmt.Printf("%v Started the Script V2 \n", time.Now().Format("2006-01-02 15:04:05"))
 
 	err = utils.MapData()
 	if err != nil {
