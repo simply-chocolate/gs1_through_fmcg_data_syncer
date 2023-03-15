@@ -21,10 +21,10 @@ func FormatContainmentLevelSapToFmcg(sapContainmentLevel string) string {
 // Formats a date string in YYYY-mm-DD format to DD-mm-YYYY
 func FormatSapDateToFMCGDate(sapDate string) (string, error) {
 	if sapDate == "" {
-		sapDate = "2020-01-01"
+		sapDate = "2020-01-01T00:00:00Z"
 	}
 
-	formattedDate, err := time.Parse("2006-01-02", sapDate)
+	formattedDate, err := time.Parse("2006-01-02T15:04:05Z", sapDate)
 	if err != nil {
 		return "", fmt.Errorf("error parsing date: %v to fmcg format. Error:%v", sapDate, err)
 	}

@@ -38,13 +38,21 @@ func IterateProductsAndMapToFMCGFormat(
 
 						baseItemData, err = MapBaseItemData(baseItemData, itemData)
 						if err != nil {
-							teams_notifier.SendMappingErrorToTeams(baseItemData.GTIN, "At mapping base item data", err.Error())
+							if baseItemData.GTIN == "" {
+								teams_notifier.SendMappingErrorToTeams(itemData.ItemCode, "At mapping base item data", err.Error())
+							} else {
+								teams_notifier.SendMappingErrorToTeams(baseItemData.GTIN, "At mapping base item data", err.Error())
+							}
 							continue
 						}
 
 						err = fmcg_api_wrapper.FMCGApiPostBaseItem(baseItemData, 0)
 						if err != nil {
-							teams_notifier.SendMappingErrorToTeams(baseItemData.GTIN, "At posting base item data", err.Error())
+							if baseItemData.GTIN == "" {
+								teams_notifier.SendMappingErrorToTeams(itemData.ItemCode, "At posting base item data", err.Error())
+							} else {
+								teams_notifier.SendMappingErrorToTeams(baseItemData.GTIN, "At posting base item data", err.Error())
+							}
 							continue
 						}
 
@@ -54,13 +62,21 @@ func IterateProductsAndMapToFMCGFormat(
 
 						caseData, err = MapCaseData(caseData, itemData, UnitGTIN)
 						if err != nil {
-							teams_notifier.SendMappingErrorToTeams(caseData.GTIN, "At mapping case data", err.Error())
+							if caseData.GTIN == "" {
+								teams_notifier.SendMappingErrorToTeams(itemData.ItemCode, "At mapping case data", err.Error())
+							} else {
+								teams_notifier.SendMappingErrorToTeams(caseData.GTIN, "At mapping case data", err.Error())
+							}
 							continue
 						}
 
 						err = fmcg_api_wrapper.FMCGApiPostCase(caseData, 0)
 						if err != nil {
-							teams_notifier.SendMappingErrorToTeams(caseData.GTIN, "At posting case data", err.Error())
+							if caseData.GTIN == "" {
+								teams_notifier.SendMappingErrorToTeams(itemData.ItemCode, "At mapping case data", err.Error())
+							} else {
+								teams_notifier.SendMappingErrorToTeams(caseData.GTIN, "At mapping case data", err.Error())
+							}
 							continue
 
 						}

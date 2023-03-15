@@ -40,7 +40,11 @@ func MapCaseData(caseData fmcg_api_wrapper.FmcgProductBodyCase, itemData sap_api
 	caseData.FunctionalProductNameLanguageCodeDA = "da"
 	caseData.UnitOfMeasure = "CASE"
 	caseData.IsOrderingUnit = true
-	caseData.IsPackageSalesReady = "FALSE" // TODO: Opret i SAP da barer jo teknisk set er, men andre ting er ikke.
+	if itemData.IsSalesReady == "Y" {
+		caseData.IsPackageSalesReady = "TRUE"
+	} else {
+		caseData.IsPackageSalesReady = "FALSE"
+	}
 
 	shelfLifeAsInt, err := strconv.Atoi(itemData.ShelfLifeFromArrivalInDays)
 	if err != nil {
