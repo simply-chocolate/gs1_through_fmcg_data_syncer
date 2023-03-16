@@ -9,6 +9,21 @@ import (
 // Calls the APIs and retrieves the information needed to handle the integration of data
 func MapData() error {
 
+	// Check if we need to update the status of the products in SAP
+	AttemptedSapItemsData, err := GetAttemptedItemsFromSap()
+	if err != nil {
+		fmt.Println("Couldn't get Invoices from SAP. Sleeping 10 minutes")
+		time.Sleep(10 * time.Minute)
+		AttemptedSapItemsData, err = GetAttemptedItemsFromSap()
+		if err != nil {
+			return fmt.Errorf("error getting the invoices from SAP: %v", err)
+		}
+	}
+	err = UpdateAttemptedItemsStatus(AttemptedSapItemsData)
+	if err != nil {
+		teams_notifier.SendUnknownErrorToTeams(err)
+	}
+
 	// Then we get the items from SAP that has been requested to be updated
 	SapItemsData, err := GetItemDataFromSap()
 	if err != nil {

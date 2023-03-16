@@ -5,26 +5,27 @@ import (
 	"gs1_syncer/sap_api_wrapper"
 	"gs1_syncer/teams_notifier"
 	"gs1_syncer/utils"
-	"log"
 	"time"
 
-	"github.com/joho/godotenv"
+	gocron "github.com/go-co-op/gocron"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	fmt.Printf("%v Started the Script V2 \n", time.Now().Format("2006-01-02 15:04:05"))
+	utils.LoadEnvs()
+	fmt.Println("Starting the Script V2")
+	fmt.Println(time.Now())
 
-	err = utils.MapData()
-	if err != nil {
-		teams_notifier.SendUnknownErrorToTeams(err)
-	}
+	s := gocron.NewScheduler(time.UTC)
+	_, _ = s.Cron("03 11 * * *").SingletonMode().Do(func() {
+		fmt.Printf("%v Started the Script V2 \n", time.Now().Format("2006-01-02 15:04:05"))
 
-	sap_api_wrapper.SapApiPostLogout()
+		err := utils.MapData()
+		if err != nil {
+			teams_notifier.SendUnknownErrorToTeams(err)
+		}
 
-	fmt.Printf("%v Success \n", time.Now().Format("2006-01-02 15:04:05"))
-
+		sap_api_wrapper.SapApiPostLogout()
+		fmt.Printf("%v Success \n", time.Now().Format("2006-01-02 15:04:05"))
+	})
+	s.StartBlocking()
 }
