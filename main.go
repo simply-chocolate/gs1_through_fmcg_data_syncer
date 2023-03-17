@@ -12,12 +12,12 @@ import (
 
 func main() {
 	utils.LoadEnvs()
-	fmt.Println("Starting the Script V2")
-	fmt.Println(time.Now())
+	fmt.Println("Started the Cron Scheduler")
+	fmt.Println(time.Now().UTC().Format("2006-01-02 15:04:05"))
 
 	s := gocron.NewScheduler(time.UTC)
 	_, _ = s.Cron("0 5,10,15 * * *").SingletonMode().Do(func() {
-		fmt.Printf("%v Started the Script V2 \n", time.Now().Format("2006-01-02 15:04:05"))
+		fmt.Printf("%v Started the Script \n", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
 		err := utils.MapData()
 		if err != nil {
@@ -25,7 +25,7 @@ func main() {
 		}
 
 		sap_api_wrapper.SapApiPostLogout()
-		fmt.Printf("%v Success \n", time.Now().Format("2006-01-02 15:04:05"))
+		fmt.Printf("%v Success \n", time.Now().UTC().Format("2006-01-02 15:04:05"))
 	})
 	s.StartBlocking()
 }
