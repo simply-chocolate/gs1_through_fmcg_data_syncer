@@ -16,7 +16,7 @@ func main() {
 	fmt.Println(time.Now())
 
 	s := gocron.NewScheduler(time.UTC)
-	_, _ = s.Cron("03 11 * * *").SingletonMode().Do(func() {
+	_, _ = s.Cron("0 5,10,15 * * *").SingletonMode().Do(func() {
 		fmt.Printf("%v Started the Script V2 \n", time.Now().Format("2006-01-02 15:04:05"))
 
 		err := utils.MapData()
