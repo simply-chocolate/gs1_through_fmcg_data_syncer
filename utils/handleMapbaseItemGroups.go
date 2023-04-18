@@ -117,7 +117,12 @@ func MapNutritionalInformation(baseItemData fmcg_api_wrapper.FmcgProductBodyBase
 	baseItemData.NutritionalSaltUOM = "GRM"
 
 	baseItemData.ListOfIngredientsLanguageCodeDA = "da"
-	baseItemData.ListOfIngredientsDA = itemData.ListOfIngredientsDA
+	// CAP THIS TO 5000 CHARACTERS
+	if len(itemData.ListOfIngredientsDA) > 5000 {
+		baseItemData.ListOfIngredientsDA = itemData.ListOfIngredientsDA[:5000]
+	} else {
+		baseItemData.ListOfIngredientsDA = itemData.ListOfIngredientsDA
+	}
 
 	return baseItemData
 }
