@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"gs1_syncer/fmcg_api_wrapper"
 	"gs1_syncer/sap_api_wrapper"
-	"strconv"
 )
 
 func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemData sap_api_wrapper.SapApiItemsData) error {
-
+	var err error
 	mixCaseData.DataType = "CORRECT"
 	mixCaseData.DataCarrierTypeCode = "EAN_13"
 	mixCaseData.CountryOfOrigin = "208"
@@ -44,9 +43,9 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 	mixCaseData.IsOrderingUnit = true
 	mixCaseData.IsPackageSalesReady = "FALSE"
 
-	shelfLifeAsInt, err := strconv.Atoi(itemData.ShelfLifeFromArrivalInDays)
-	if err != nil {
-		return fmt.Errorf("error converting shelfLife to int on mixCaseData. GTIN: %v err: %v", mixCaseData.GTIN, err)
+	shelfLifeAsInt := itemData.ShelfLifeFromArrivalInDays
+	if shelfLifeAsInt == 0 {
+		shelfLifeAsInt = int(float64(mixCaseData.ShelfLifeFromProductionInDays) * 0.75)
 	}
 	mixCaseData.ShelfLifeFromArrivalInDays = shelfLifeAsInt
 

@@ -42,7 +42,7 @@ type SapApiItemsData struct {
 	ItemNameDA string `json:"ItemName"`
 	/*FunctionalName                string `json:"U_BOYX_Varebeskrivelse"`*/
 	FunctionalProductNameDA       string `json:"U_CCF_Functional_Name"`
-	ShelfLifeFromArrivalInDays    string `json:"U_BOYX_Holdbarhed_Kunde"`
+	ShelfLifeFromArrivalInDays    int    `json:"CCF_ShelfLifeArrival"`
 	ShelfLifeFromProductionInDays int    `json:"U_BOYX_Holdbarhed"`
 	AvailabilityDateTime          string `json:"U_CCF_LaunchDate"`
 	EffectiveDateTime             string `json:"U_CCF_GS1_Ajour"`

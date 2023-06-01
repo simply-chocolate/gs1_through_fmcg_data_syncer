@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"gs1_syncer/fmcg_api_wrapper"
 	"gs1_syncer/sap_api_wrapper"
-	"strconv"
 )
 
 func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, itemData sap_api_wrapper.SapApiItemsData) (fmcg_api_wrapper.FmcgProductBodyBaseItem, error) {
-
+	var err error
 	// TODO: Lav et check der finder ud af om dette GLN nummer allerede findes i GS1(FMCG Systemet) for at bestemme om D8164 skal være
 	baseItemData.DataType = "CORRECT"
 
@@ -50,8 +49,8 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 	baseItemData.IsOrderingUnit = false
 
 	baseItemData.ShelfLifeFromProductionInDays = itemData.ShelfLifeFromProductionInDays
-	shelfLifeAsInt, err := strconv.Atoi(itemData.ShelfLifeFromArrivalInDays)
-	if err != nil {
+	shelfLifeAsInt := itemData.ShelfLifeFromArrivalInDays
+	if shelfLifeAsInt == 0 {
 		shelfLifeAsInt = int(float64(baseItemData.ShelfLifeFromProductionInDays) * 0.75)
 	}
 	baseItemData.ShelfLifeFromArrivalInDays = shelfLifeAsInt

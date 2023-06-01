@@ -34,7 +34,7 @@ func MapAllergens(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, itemDat
 	baseItemData.ContainmentLevelBrazilNut = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelBrazilNut)
 	baseItemData.AllergenPistachio = "ST"
 	baseItemData.ContainmentLevelPistachio = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelPistachio)
-	baseItemData.AllergenQueenslandNut = "SQ"
+	baseItemData.AllergenQueenslandNut = "SM"
 	baseItemData.ContainmentLevelQueenslandNut = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelQueenslandNut)
 	baseItemData.AllergenCelery = "BC"
 	baseItemData.ContainmentLevelCelery = FormatContainmentLevelSapToFmcg(itemData.ContainmentLevelCelery)

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"gs1_syncer/fmcg_api_wrapper"
 	"gs1_syncer/sap_api_wrapper"
-	"strconv"
 )
 
 func MapCaseData(caseData fmcg_api_wrapper.FmcgProductBodyCase, itemData sap_api_wrapper.SapApiItemsData, baseItemGTIN string) (fmcg_api_wrapper.FmcgProductBodyCase, error) {
+	var err error
 	caseData.DataType = "CORRECT"
 	caseData.DataCarrierTypeCode = "EAN_13"
 	caseData.CountryOfOrigin = "208"
@@ -46,9 +46,9 @@ func MapCaseData(caseData fmcg_api_wrapper.FmcgProductBodyCase, itemData sap_api
 		caseData.IsPackageSalesReady = "FALSE"
 	}
 
-	shelfLifeAsInt, err := strconv.Atoi(itemData.ShelfLifeFromArrivalInDays)
-	if err != nil {
-		return fmcg_api_wrapper.FmcgProductBodyCase{}, fmt.Errorf("error converting shelfLife to int on case. GTIN: %v err: %v", caseData.GTIN, err)
+	shelfLifeAsInt := itemData.ShelfLifeFromArrivalInDays
+	if shelfLifeAsInt == 0 {
+		shelfLifeAsInt = int(float64(caseData.ShelfLifeFromProductionInDays) * 0.75)
 	}
 	caseData.ShelfLifeFromArrivalInDays = shelfLifeAsInt
 
