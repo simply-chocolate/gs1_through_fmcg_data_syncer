@@ -9,13 +9,13 @@ import (
 )
 
 func SendValidationErrorToTeams(GTIN string, fieldId string, fieldLabel string, message string, messageType string, postBody string) error {
-	fmt.Println("SendValidationErrorToTeams", GTIN, fieldId, fieldLabel, message, messageType, postBody)
 	client := goteamsnotify.NewTeamsClient()
 	webhook := os.Getenv("TEAMS_WEBHOOK_URL")
 
 	card := messagecard.NewMessageCard()
 	card.Title = "ValidationError"
-	card.Text = fmt.Sprintf("Script ran into a validation Error.<BR/>"+"**GTIN**: %v<BR/>"+
+	card.Text = fmt.Sprintf("Script ran into a validation Error.<BR/>"+
+		"**GTIN**: %v<BR/>"+
 		"**Field ID**: %s<BR/>"+
 		"**Field Label**:%s<BR/>"+
 		"**Message** %s<BR/>"+

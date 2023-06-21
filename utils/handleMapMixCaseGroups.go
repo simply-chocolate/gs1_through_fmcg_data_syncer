@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gs1_syncer/fmcg_api_wrapper"
 	"gs1_syncer/sap_api_wrapper"
+	"gs1_syncer/teams_notifier"
 	"math"
 	"time"
 )
@@ -53,10 +54,10 @@ func Map20BarsCaseDisplay(
 	}
 
 	if len(baseItem.Value) == 0 {
-		return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error getting the base item from SAP. len of baseItem.Value == 0 ItemCode:%v\n err:%v", itemData.ItemCode, err)
+		return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error getting the base item from SAP. len of baseItem.Value == 0 ItemCode:%v", itemData.ItemCode)
 	}
 	if len(baseItem.Value[0].ItemBarCodeCollection) == 0 {
-		return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error getting the base item from SAP. len of baseItem.Value[0].ItemBarCodeCollection == 0 ItemCode:%v\n err:%v", itemData.ItemCode, err)
+		return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error getting the base item from SAP. len of baseItem.Value[0].ItemBarCodeCollection == 0 ItemCode:%v", itemData.ItemCode)
 	}
 
 	var baseUnit fmcg_api_wrapper.FMCGMixCaseContentBaseItem
@@ -83,15 +84,18 @@ func MapMixCaseContent(
 
 	SapMixCaseContent, err := GetMixCaseItemsFromSap(itemData.ItemCode)
 	if err != nil {
-		fmt.Println("Couldn't get Invoices from SAP. Sleeping 10 minutes")
+		fmt.Println("Couldn't get mix case contents from SAP. Sleeping 10 minutes")
 		time.Sleep(10 * time.Minute)
 		SapMixCaseContent, err = GetMixCaseItemsFromSap(itemData.ItemCode)
 		if err != nil {
-			return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error getting the invoices from SAP: %v", err)
+			return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error getting the mix case contents from SAP: %v", err)
 		}
 	}
 
+	hasError := false
+
 	for _, contentItem := range SapMixCaseContent.Value {
+
 		mixContentItemInfo, err := GetMixContentItemInfoFromSap(contentItem.ItemCode)
 		if err != nil {
 			return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error getting MixContentItemInfo from SAP. err:%v", err)
@@ -106,7 +110,8 @@ func MapMixCaseContent(
 				}
 				// If the item is a HF, but the BarCodeForHF is empty, we return an error, because then we can't get the GTIN
 				if contentItemData.BarCodeForHF == "" {
-					return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error getting MixContentItemInfo from SAP. BarCodeForHF is empty. ItemCode:%v", contentItemData.ItemCode)
+					teams_notifier.SendHFMissingBarcodeErrorToTeams(itemData.ItemCode, contentItemData.ItemCode)
+					return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error getting MixContentItemInfo from SAP")
 				}
 
 				var identifierData fmcg_api_wrapper.FMCGIdentifierData
@@ -118,7 +123,9 @@ func MapMixCaseContent(
 					return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error getting content item from FMCG. If the status is 404 the it has not been synced yet. ItemCode:%v BarCode:%v\n err:%v", contentItemData.ItemCode, contentItemData.BarCodeForHF, err)
 				}
 				if productStatus.Body.Gs1Status != "OK" {
-					return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf(" ItemCode:%v BarCode:%v has not been synced all the way to GS1 with OK. Check GS1 Status: %v\n err:%v", contentItemData.ItemCode, contentItemData.BarCodeForHF, productStatus.Body.Gs1Status, err)
+					hasError = true
+					teams_notifier.SendContentItemNotSyncedErrorToTeams(itemData.ItemCode, contentItemData.ItemCode, contentItemData.BarCodeForHF, productStatus.Body.Gs1Status)
+					continue
 				}
 
 				var baseUnit fmcg_api_wrapper.FMCGMixCaseContentBaseItem
@@ -141,7 +148,9 @@ func MapMixCaseContent(
 						return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error getting content item from FMCG. If the status is 404 the it has not been synced yet. ItemCode:%v BarCode:%v\n err:%v", contentItemData.ItemCode, barcodeCollection.Barcode, err)
 					}
 					if productStatus.Body.Gs1Status != "OK" {
-						return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf(" ItemCode:%v BarCode:%v has not been synced all the way to GS1 with OK. Check GS1 Status: %v\n err:%v", contentItemData.ItemCode, barcodeCollection.Barcode, productStatus.Body.Gs1Status, err)
+						teams_notifier.SendContentItemNotSyncedErrorToTeams(itemData.ItemCode, contentItemData.ItemCode, contentItemData.BarCodeForHF, productStatus.Body.Gs1Status)
+						hasError = true
+						continue
 					}
 
 					var baseUnit fmcg_api_wrapper.FMCGMixCaseContentBaseItem
@@ -152,6 +161,9 @@ func MapMixCaseContent(
 				}
 			}
 		}
+	}
+	if hasError {
+		return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error mapping mixCase")
 	}
 
 	return baseUnits, nil
@@ -183,7 +195,7 @@ func MapBaseUnitsForMixCase(
 			itemData,
 			baseUnits)
 		if err != nil {
-			return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, fmt.Errorf("error mapping mix case content. ItemCode:%v\n err:%v", itemData.ItemCode, err)
+			return []fmcg_api_wrapper.FMCGMixCaseContentBaseItem{}, err
 		}
 	}
 

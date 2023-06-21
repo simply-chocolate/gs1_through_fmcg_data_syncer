@@ -25,7 +25,7 @@ type FmcgProductBodyMixCase struct {
 
 	IsOrderingUnit                bool   `json:"D8271"` // [TRUE, FALSE] (True for cases and displays, False for BASE_UNIT)
 	UnitOfMeasure                 string `json:"D8276"` // [BASE_UNIT_OR_EACH, CASE, PALLET, DISPLAY_SHIPPER] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=TradeItemUnitDescriptorCodeList.da
-	ShelfLifeFromArrivalInDays    int    `json:"D8283"` // SAP FIELD: U_BOYX_Holdbarhed_Kunde
+	ShelfLifeFromArrivalInDays    int    `json:"D8283"` // SAP FIELD: U_CCF_ShelfLifeArrival
 	ShelfLifeFromProductionInDays int    `json:"D8284"` // SAP FIELD: U_BOYX_Holdbarhed
 	IsQuantityOrPriceVarying      bool   `json:"D8297"` // [TRUE, FALSE]
 	DangerousContent              string `json:"D8030"` // [NOT_APPLICABLE, TRUE, FALSE, UNSPECIFIED] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NonBinaryLogicEnumerationCodeList.da
