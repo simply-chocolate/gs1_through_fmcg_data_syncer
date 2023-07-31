@@ -13,19 +13,17 @@ import (
 func main() {
 	utils.LoadEnvs()
 
-	fmt.Printf("%v Started the Script \n", time.Now().UTC().Format("2006-01-02 15:04:05"))
+	fmt.Printf("%v: Started the Script \n", time.Now().UTC().Format("2006-01-02 15:04:05"))
 	err := utils.MapData()
 	if err != nil {
 		teams_notifier.SendUnknownErrorToTeams(err)
 	}
-	fmt.Printf("%v Success \n", time.Now().UTC().Format("2006-01-02 15:04:05"))
-
-	fmt.Println("Started the Cron Scheduler")
-	fmt.Println(time.Now().UTC().Format("2006-01-02 15:04:05"))
+	fmt.Printf("%v: Success \n", time.Now().UTC().Format("2006-01-02 15:04:05"))
+	fmt.Printf("%v: Started the Cron Scheduler", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
 	s := gocron.NewScheduler(time.UTC)
 	_, _ = s.Cron("0 5 * * *").SingletonMode().Do(func() {
-		fmt.Printf("%v Started the Script \n", time.Now().UTC().Format("2006-01-02 15:04:05"))
+		fmt.Printf("%v: Started the Script \n", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
 		err := utils.MapData()
 		if err != nil {
@@ -33,7 +31,7 @@ func main() {
 		}
 
 		sap_api_wrapper.SapApiPostLogout()
-		fmt.Printf("%v Success \n", time.Now().UTC().Format("2006-01-02 15:04:05"))
+		fmt.Printf("%v: Success \n", time.Now().UTC().Format("2006-01-02 15:04:05"))
 	})
 	s.StartBlocking()
 }
