@@ -42,6 +42,8 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 	mixCaseData.UnitOfMeasure = "DISPLAY_SHIPPER"
 	mixCaseData.IsOrderingUnit = true
 	mixCaseData.IsPackageSalesReady = "FALSE"
+	mixCaseData.MaximumStorageTemp = itemData.MaximumStorageTemp
+	mixCaseData.MinimumStorageTemp = itemData.MinimumStorageTemp
 
 	shelfLifeAsInt := itemData.ShelfLifeFromArrivalInDays
 	if shelfLifeAsInt == 0 {

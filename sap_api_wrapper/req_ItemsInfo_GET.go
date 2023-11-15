@@ -9,22 +9,6 @@ type SapApiGetItemsDataResults struct {
 	NextLink string            `json:"odata.nextLink"`
 }
 
-/*
-type ItemUnitOfMeasurement struct {
-	UoMType    string `json:"UoMType"`
-	UoMEntry   int    `json:"UoMEntry"`
-	Length     int    `json:"Length1"`
-	LengthUnit int    `json:"Length1Unit"` // For dimensions [1 = mm?, 2 = cm, 3 = m?]
-	Width      int    `json:"Width1"`
-	WidthUnit  int    `json:"Width1Unit"` // For dimensions [1 = mm?, 2 = cm, 3 = m?]
-	Height     int    `json:"Height1"`
-	HeightUnit int    `json:"Height1Unit"` // For dimensions [1 = mm?, 2 = cm, 3 = m?]
-	Weight     int    `json:"Weight1"`
-	WeightUnit int    `json:"Weight1Unit"` // For weight [1 = ?, 2 = g?, 3 = kg]
-	// Maybe the units is 1 list, so 2 = cm and 3 = kg no matter what type of input?
-}
-*/
-
 type SapApiItemsData struct {
 	// Update Information
 	UpdateDate string `json:"UpdateDate"`
@@ -44,6 +28,8 @@ type SapApiItemsData struct {
 	FunctionalProductNameDA       string `json:"U_CCF_Functional_Name"`
 	ShelfLifeFromArrivalInDays    int    `json:"U_CCF_ShelfLifeArrival"`
 	ShelfLifeFromProductionInDays int    `json:"U_BOYX_Holdbarhed"`
+	MinimumStorageTemp            int    `json:"U_BOYX_Minimum"`
+	MaximumStorageTemp            int    `json:"U_BOYX_Maximum"`
 	AvailabilityDateTime          string `json:"U_CCF_LaunchDate"`
 	EffectiveDateTime             string `json:"U_CCF_GS1_Ajour"`
 	BrandName                     string `json:"U_BOYX_varemrk"`
@@ -53,9 +39,8 @@ type SapApiItemsData struct {
 	ProductImageUrl               string `json:"U_CCF_GS1_Z1C1_URL"`
 	PackagingType                 string `json:"U_CCF_Packaging_Type"`
 	IsSalesReady                  string `json:"U_CCF_IsCaseSalesReady"`
-	// Logistical Data // TODO: Use the actual UOM module in SAP for these instead of the homemade one from Bitpeople.
-	//ItemUnitOfMeasurementCollection []ItemUnitOfMeasurement `json:"ItemUnitOfMeasurementCollection"`
-	// We want to use the above instead, but the data is not in SAP yet, so we start with this.
+	// Logistical Data
+
 	// BaseUnit
 	BaseUnitWidth       int `json:"U_BOYX_Bredde_e"`
 	BaseUnitHeight      int `json:"U_BOYX_hoojde_e"`

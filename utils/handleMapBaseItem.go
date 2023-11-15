@@ -47,6 +47,8 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 	baseItemData.RegulatedProductNameLanguageCodeDA = "da"
 	baseItemData.UnitOfMeasure = "BASE_UNIT_OR_EACH"
 	baseItemData.IsOrderingUnit = false
+	baseItemData.MaximumStorageTemp = itemData.MaximumStorageTemp
+	baseItemData.MinimumStorageTemp = itemData.MinimumStorageTemp
 
 	baseItemData.ShelfLifeFromProductionInDays = itemData.ShelfLifeFromProductionInDays
 	shelfLifeAsInt := itemData.ShelfLifeFromArrivalInDays

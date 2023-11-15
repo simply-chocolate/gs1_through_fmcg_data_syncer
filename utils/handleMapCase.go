@@ -45,6 +45,8 @@ func MapCaseData(caseData fmcg_api_wrapper.FmcgProductBodyCase, itemData sap_api
 	} else {
 		caseData.IsPackageSalesReady = "FALSE"
 	}
+	caseData.MaximumStorageTemp = itemData.MaximumStorageTemp
+	caseData.MinimumStorageTemp = itemData.MinimumStorageTemp
 
 	shelfLifeAsInt := itemData.ShelfLifeFromArrivalInDays
 	if shelfLifeAsInt == 0 {
