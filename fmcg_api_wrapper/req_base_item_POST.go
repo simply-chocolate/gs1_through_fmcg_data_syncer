@@ -32,15 +32,18 @@ type FmcgProductBodyBaseItem struct {
 	ShelfLifeFromProductionInDays int    `json:"D8284"`   //
 	MaximumStorageTemp            int    `json:"D3599_1"` //
 	MinimumStorageTemp            int    `json:"D3608_1"` //
-	IsQuantityOrPriceVarying      bool   `json:"D8297"`   // [TRUE, FALSE]
-	DangerousContent              string `json:"D8030"`   // [NOT_APPLICABLE, TRUE, FALSE, UNSPECIFIED] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NonBinaryLogicEnumerationCodeList.da
-	RelevantForPriceComparison    string `json:"D8019"`   // [NOT_APPLICABLE, TRUE, FALSE, UNSPECIFIED] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NonBinaryLogicEnumerationCodeList.da
-	IsConsumerUnit                bool   `json:"D8216"`   // [TRUE, FALSE]
-	IsShippingUnit                bool   `json:"D8236"`   // [TRUE, FALSE]
-	IsPackagingMarkedReturnable   bool   `json:"D8311"`   // [TRUE, FALSE]
-	OrganicTradeItemCodeList      int    `json:"D0798"`   // [1, 5] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=OrganicTradeItemCodeList.da
-	EffectiveDateTime             string `json:"D8286"`   // DateTime
-	StartAvailabilityDateTime     string `json:"D8314"`   // DateTime
+	TemperatureType               string `json:"D3614_1"` // [STORAGE_HANDLING, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=TemperatureQualifierCodeList.da
+	TemperatureOUM                string `json:"D8374_1"` // [CEL, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=TemperatureMeasurementUnitCodeList.da
+
+	IsQuantityOrPriceVarying    bool   `json:"D8297"` // [TRUE, FALSE]
+	DangerousContent            string `json:"D8030"` // [NOT_APPLICABLE, TRUE, FALSE, UNSPECIFIED] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NonBinaryLogicEnumerationCodeList.da
+	RelevantForPriceComparison  string `json:"D8019"` // [NOT_APPLICABLE, TRUE, FALSE, UNSPECIFIED] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=NonBinaryLogicEnumerationCodeList.da
+	IsConsumerUnit              bool   `json:"D8216"` // [TRUE, FALSE]
+	IsShippingUnit              bool   `json:"D8236"` // [TRUE, FALSE]
+	IsPackagingMarkedReturnable bool   `json:"D8311"` // [TRUE, FALSE]
+	OrganicTradeItemCodeList    int    `json:"D0798"` // [1, 5] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=OrganicTradeItemCodeList.da
+	EffectiveDateTime           string `json:"D8286"` // DateTime
+	StartAvailabilityDateTime   string `json:"D8314"` // DateTime
 
 	//	Logistical Information
 	NetWeight      int    `json:"D8068"`
