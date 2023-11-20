@@ -19,6 +19,7 @@ func MapData() error {
 			return fmt.Errorf("error getting the attempted items from SAP: %v", err)
 		}
 	}
+
 	err = UpdateAttemptedItemsStatus(AttemptedSapItemsData)
 	if err != nil {
 		teams_notifier.SendUnknownErrorToTeams(err)
