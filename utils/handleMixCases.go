@@ -22,6 +22,9 @@ func IterateMixCasesAndMapToFMCGFormat(
 					// TODO: Teams notifier this
 					return fmt.Errorf("error mapping the MixCase. GTIN: %v \nError: %v", mixCaseData.GTIN, err)
 				}
+
+				// TODO: Implement posting this to GS1??
+
 			}
 		}
 	}

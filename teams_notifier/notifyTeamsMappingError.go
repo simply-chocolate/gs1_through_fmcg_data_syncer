@@ -20,7 +20,7 @@ func SendMappingErrorToTeams(GTIN string, errorPlace string, errorMessage string
 		"**Error Message**: %s<BR/>", GTIN, errorPlace, errorMessage)
 
 	if err := client.Send(webhook, card); err != nil {
-		return fmt.Errorf("SendValidationErrorToTeams failed to send the error. Error: %v", err)
+		fmt.Printf("SendValidationErrorToTeams failed to send the error. Error: %v", err)
 	}
 	return nil
 }

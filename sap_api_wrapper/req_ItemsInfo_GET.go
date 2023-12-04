@@ -11,12 +11,14 @@ type SapApiGetItemsDataResults struct {
 
 type SapApiItemsData struct {
 	// Update Information
-	UpdateDate string `json:"UpdateDate"`
-	UpdateTime string `json:"UpdateTime"`
-	GS1Status  string `json:"U_CCF_GS1_Status"`
+	UpdateDate   string `json:"UpdateDate"`
+	UpdateTime   string `json:"UpdateTime"`
+	LastSyncDate string `json:"U_CCF_FMCG_Update_Time"`
+	GS1Status    string `json:"U_CCF_GS1_Status"`
 
 	TypeOfProduct string `json:"U_CCF_Type"`    // If this is Equal to "Kampagne" then it should not have a BaseUnit ItemCode
 	UoMGroupEntry int    `json:"UoMGroupEntry"` // If this is Equal to 42 then it's a Campaign Display
+
 	// General Information
 	ItemBarCodeCollection []struct {
 		Barcode  string `json:"Barcode"`
@@ -24,6 +26,7 @@ type SapApiItemsData struct {
 	} `json:"ItemBarCodeCollection"`
 	ItemCode   string `json:"ItemCode"`
 	ItemNameDA string `json:"ItemName"`
+
 	/*FunctionalName                string `json:"U_BOYX_Varebeskrivelse"`*/
 	FunctionalProductNameDA       string `json:"U_CCF_Functional_Name"`
 	ShelfLifeFromArrivalInDays    int    `json:"U_CCF_ShelfLifeArrival"`

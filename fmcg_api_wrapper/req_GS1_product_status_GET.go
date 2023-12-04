@@ -9,6 +9,18 @@ type FMCGProductStatusResult struct {
 	FmcgProductStatus string   `json:"fmcgProductsStatus"`
 	Gs1Status         string   `json:"gs1Status"`
 	Gs1Response       []string `json:"gs1Response"`
+	Gs1Warnings       []string `json:"gs1Warnings"`
+	ValidationErrors  []struct {
+		FieldId     string   `json:"fieldId"`
+		FieldLabel  string   `json:"fieldLabel"`
+		Message     string   `json:"message"`
+		MessageType string   `json:"messageType"`
+		RequiredBy  []string `json:"requiredBy"`
+	} `json:"validationErrors"`
+	SendStatusList []struct {
+		ProductId  string `json:"productId"`
+		SendStatus string `json:"sendStatus"`
+	} `json:"sendStatusList"`
 }
 
 type FMCTProductStatusReturn struct {
@@ -20,13 +32,13 @@ func FMCGApiGetProductStatus(FMCGIdentifierData FMCGIdentifierData, count int) (
 		//DevMode().
 		R().
 		EnableDump().
-		SetResult(FMCGProductStatusResult{}).
+		SetSuccessResult(FMCGProductStatusResult{}).
 		Get(fmt.Sprintf("/status/%v.%v", FMCGIdentifierData.GTIN, FMCGIdentifierData.TargetMarketCode))
 	if err != nil {
 		return FMCTProductStatusReturn{}, err
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		if resp.StatusCode == 404 {
 			return FMCTProductStatusReturn{
 				Body: &FMCGProductStatusResult{
@@ -39,7 +51,7 @@ func FMCGApiGetProductStatus(FMCGIdentifierData FMCGIdentifierData, count int) (
 	}
 
 	return FMCTProductStatusReturn{
-		Body: resp.Result().(*FMCGProductStatusResult),
+		Body: resp.SuccessResult().(*FMCGProductStatusResult),
 	}, nil
 
 }

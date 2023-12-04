@@ -82,20 +82,28 @@ func FMCGApiPostMixCase(mixCaseInfo FmcgProductBodyMixCase, mixCaseContent []FMC
 		//DevMode().
 		R().
 		EnableDump().
-		SetResult(FmcgProductPostResult{}).
+		SetSuccessResult(FmcgProductPostResult{}).
+		SetErrorResult(FMCGSendToGS1PostResult{}).
 		SetBody(mixCaseInfo).
 		Post("")
 	if err != nil {
 		return err
 	}
 
-	if resp.IsError() {
-		fmt.Printf("resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+	if resp.IsErrorState() {
+		if resp.StatusCode == 400 {
+			response := resp.ErrorResult().(*FMCGSendToGS1PostResult)
+			fmt.Printf("[POSTMXCS400]: status code 400. Errorcode: %v\n", response.Result)
+
+			return nil
+		} else {
+			fmt.Printf("[POSTMXCSOTHR]: resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+		}
 		return resp.Err
 	}
 
 	// Check for validation errors before the body is sent
-	headerResponse := resp.Result().(*FmcgProductPostResult)
+	headerResponse := resp.SuccessResult().(*FmcgProductPostResult)
 	if len(headerResponse.ValidationErrors) != 0 {
 		for _, validationError := range headerResponse.ValidationErrors {
 			err = teams_notifier.SendValidationErrorToTeams(mixCaseInfo.GTIN,
@@ -128,12 +136,13 @@ func FMCGApiPostMixCase(mixCaseInfo FmcgProductBodyMixCase, mixCaseContent []FMC
 
 	if len(response.ValidationErrors) != 0 {
 		for _, validationError := range response.ValidationErrors {
-			err = teams_notifier.SendValidationErrorToTeams(mixCaseInfo.GTIN,
+			err = teams_notifier.SendValidationErrorToTeams(
+				mixCaseInfo.ItemCode,
+				mixCaseInfo.GTIN,
 				validationError.FieldId,
 				validationError.FieldLabel,
 				validationError.Message,
 				validationError.MessageType,
-				fmt.Sprintf("%v", body),
 			)
 			if err != nil {
 				return err
@@ -159,19 +168,27 @@ func FMCGApiPostMixCaseContent(body map[string]interface{}, count int) (*FmcgPro
 		//DevMode().
 		R().
 		EnableDump().
-		SetResult(FmcgProductPostResult{}).
+		SetSuccessResult(FmcgProductPostResult{}).
+		SetErrorResult(FMCGSendToGS1PostResult{}).
 		SetBody(body).
 		Post("")
 	if err != nil {
 		return nil, err
 	}
 
-	if resp.IsError() {
-		fmt.Printf("resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+	if resp.IsErrorState() {
+		if resp.StatusCode == 400 {
+			response := resp.ErrorResult().(*FMCGSendToGS1PostResult)
+			fmt.Printf("[234mkld12]: status code 400. Errorcode: %v", response.Result)
+			return nil, nil
+
+		} else {
+			fmt.Printf("[1234kmlsd12]: resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+		}
 		return nil, fmt.Errorf("error posting mixCaseContentInfo: %v", body["D8165"])
 	}
 
-	response := resp.Result().(*FmcgProductPostResult)
+	response := resp.SuccessResult().(*FmcgProductPostResult)
 
 	return response, nil
 }

@@ -80,29 +80,37 @@ func FMCGApiPostCase(caseInfo FmcgProductBodyCase, count int) error {
 		//DevMode().
 		R().
 		EnableDump().
-		SetResult(FmcgProductPostResult{}).
+		SetSuccessResult(FmcgProductPostResult{}).
+		SetErrorResult(FMCGSendToGS1PostResult{}).
 		SetBody(caseInfo).
 		Post("")
 	if err != nil {
 		return err
 	}
 
-	if resp.IsError() {
-		fmt.Printf("resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+	if resp.IsErrorState() {
+		if resp.StatusCode == 400 {
+			response := resp.ErrorResult().(*FMCGSendToGS1PostResult)
+			fmt.Printf("[POSTCASE400]: status code 400. Error: %v\n", response.Result)
+
+			return nil
+		} else {
+			fmt.Printf("[POSTCASEOTHR]: resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+		}
 		return resp.Err
 	}
 
-	response := resp.Result().(*FmcgProductPostResult)
+	response := resp.SuccessResult().(*FmcgProductPostResult)
 
 	if len(response.ValidationErrors) != 0 {
 		for _, validationError := range response.ValidationErrors {
 			err = teams_notifier.SendValidationErrorToTeams(
+				caseInfo.ItemCode,
 				caseInfo.GTIN,
 				validationError.FieldId,
 				validationError.FieldLabel,
 				validationError.Message,
 				validationError.MessageType,
-				fmt.Sprintf("%v", caseInfo),
 			)
 			if err != nil {
 				return err

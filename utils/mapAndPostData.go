@@ -39,6 +39,7 @@ func MapData() error {
 	mixDisplays := IterateProductsAndMapToFMCGFormat(SapItemsData)
 
 	// Then if any of the items are mixCases, we do them afterwards
+
 	err = IterateMixCasesAndMapToFMCGFormat(mixDisplays)
 	if err != nil {
 		teams_notifier.SendUnknownErrorToTeams(err)

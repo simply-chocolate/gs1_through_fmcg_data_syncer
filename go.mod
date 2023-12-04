@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/atc0005/go-teams-notify/v2 v2.7.0
-	github.com/imroc/req/v3 v3.26.4
+	github.com/imroc/req/v3 v3.31.1
 	github.com/joho/godotenv v1.4.0
 )
 
@@ -18,8 +18,8 @@ require (
 	github.com/marten-seemann/qpack v0.2.1 // indirect
 	github.com/marten-seemann/qtls-go1-16 v0.1.5 // indirect
 	github.com/marten-seemann/qtls-go1-17 v0.1.2 // indirect
-	github.com/marten-seemann/qtls-go1-18 v0.1.2 // indirect
-	github.com/marten-seemann/qtls-go1-19 v0.1.0-beta.1 // indirect
+	github.com/marten-seemann/qtls-go1-18 v0.1.3 // indirect
+	github.com/marten-seemann/qtls-go1-19 v0.1.1 // indirect
 	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/stretchr/testify v1.8.2 // indirect

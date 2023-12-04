@@ -9,7 +9,6 @@ import (
 )
 
 func SendProductStatusErrorToTeams(GTIN string, errorPlace string, errorMessage string) error {
-	// TODO: Make this
 	client := goteamsnotify.NewTeamsClient()
 	webhook := os.Getenv("TEAMS_WEBHOOK_URL")
 

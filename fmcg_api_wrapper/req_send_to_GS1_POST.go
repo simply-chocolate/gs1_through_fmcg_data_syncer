@@ -8,9 +8,13 @@ type FMCGIdentifierData struct {
 }
 
 type FMCGSendToGS1PostResult struct {
-	Status    int    `json:"status"`
-	ProductId string `json:"productId"`
-	Result    string `json:"result"`
+	Status            int    `json:"status"`
+	ProductId         string `json:"productId"`
+	Result            string `json:"result"`
+	HierakiStatusList []struct {
+		ProductID  string `json:"productId"`
+		SendStatus string `json:"sendStatus"`
+	}
 }
 
 func FMCGSendToGS1(FMCGIdentifierData FMCGIdentifierData, count int) (string, error) {
@@ -18,7 +22,8 @@ func FMCGSendToGS1(FMCGIdentifierData FMCGIdentifierData, count int) (string, er
 		//DevMode().
 		R().
 		EnableDump().
-		SetResult(FMCGSendToGS1PostResult{}).
+		SetSuccessResult(FMCGSendToGS1PostResult{}).
+		SetErrorResult(FMCGSendToGS1PostResult{}).
 		SetBody(map[string]interface{}{
 			"D8165": FMCGIdentifierData.GTIN,
 			"D8255": FMCGIdentifierData.TargetMarketCode,
@@ -28,12 +33,18 @@ func FMCGSendToGS1(FMCGIdentifierData FMCGIdentifierData, count int) (string, er
 		return "", err
 	}
 
-	if resp.IsError() {
-		fmt.Printf("resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+	if resp.IsErrorState() {
+		if resp.StatusCode == 400 {
+			response := resp.ErrorResult().(*FMCGSendToGS1PostResult)
+
+			return response.Result, nil
+		} else {
+			fmt.Printf("[SEND2CS1OTHR]: resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+		}
 		return "", resp.Err
 	}
 
-	response := resp.Result().(*FMCGSendToGS1PostResult)
+	response := resp.SuccessResult().(*FMCGSendToGS1PostResult)
 
 	// Check the result
 

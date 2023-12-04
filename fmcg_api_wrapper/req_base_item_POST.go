@@ -140,7 +140,7 @@ type FmcgProductBodyBaseItem struct {
 	NutritionalSaltValue              string `json:"D8183-UNPREPARED_6"` //
 	NutritionalSaltUOM                string `json:"D8184-UNPREPARED_6"` // [GRM, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=MeasurementUnitCodeList.da
 
-	// TODO: Edit the setup in SAP to be compatible with list of ingredients on multiple languages, and be able to pull out the data in multiple languages.
+	// SAP now has multiple languages, but we only use the "current list of ingredients" field, cause that is the one we know matches the physical product.
 	ListOfIngredientsDA             string `json:"D8179_1"` //
 	ListOfIngredientsLanguageCodeDA string `json:"D8180_1"` // da (must be non-capitalized)
 
@@ -173,40 +173,58 @@ type FmcgProductPostResult struct {
 	} `json:"validationErrors"`
 }
 
-func FMCGApiPostBaseItem(ItemInfo FmcgProductBodyBaseItem, count int) error {
+func FMCGApiPostBaseItem(ItemInfo FmcgProductBodyBaseItem) error {
+
 	resp, err := GetFMCGApiBaseClient().
 		//DevMode().
 		R().
 		EnableDump().
-		SetResult(FmcgProductPostResult{}).
+		SetSuccessResult(FmcgProductPostResult{}).
+		SetErrorResult(FMCGSendToGS1PostResult{}).
 		SetBody(ItemInfo).
 		Post("")
 	if err != nil {
 		return err
 	}
 
-	if resp.IsError() {
-		fmt.Printf("resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+	if resp.IsErrorState() {
+		if resp.StatusCode == 400 {
+			response := resp.ErrorResult().(*FMCGSendToGS1PostResult)
+			fmt.Printf("[POSTBU400]: status code 400. Errorcode: %v\n", response.Result)
+
+			return nil
+		} else {
+			fmt.Printf("[POSTBUOTHR]: resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
+		}
 		return resp.Err
 	}
 
-	response := resp.Result().(*FmcgProductPostResult)
+	response := resp.SuccessResult().(*FmcgProductPostResult)
 
 	if len(response.ValidationErrors) != 0 {
 		for _, validationError := range response.ValidationErrors {
 			if validationError.FieldId == "D8271" {
 				continue
 			}
-			err = teams_notifier.SendValidationErrorToTeams(ItemInfo.GTIN,
+			err = teams_notifier.SendValidationErrorToTeams(ItemInfo.ItemCode,
+				ItemInfo.GTIN,
 				validationError.FieldId,
 				validationError.FieldLabel,
 				validationError.Message,
 				validationError.MessageType,
-				fmt.Sprintf("%v", ItemInfo),
 			)
 			if err != nil {
 				return err
 			}
+		}
+	} else {
+		var SendToGS1Data FMCGIdentifierData
+		SendToGS1Data.GTIN = ItemInfo.GTIN
+		SendToGS1Data.TargetMarketCode = ItemInfo.TargetMarketCode
+
+		err = SendGTINToGS1(SendToGS1Data, ItemInfo.ItemCode)
+		if err != nil {
+			return fmt.Errorf("error sending product with GTIN:%v to GS1. \nError:%v", SendToGS1Data.GTIN, err)
 		}
 	}
 

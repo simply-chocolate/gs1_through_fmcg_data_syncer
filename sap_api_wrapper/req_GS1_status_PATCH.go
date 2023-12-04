@@ -17,6 +17,7 @@ type GS1StatusAndResponseResult struct {
 
 // Takes the Gs1Status and Gs1 Response and updates the item in SAP
 func SetGs1StatusAndResponse(itemCode string, GS1Status string, GS1Response string) error {
+
 	var body GS1StatusAndResponseBody
 	body.GS1Status = GS1Status
 	body.GS1Response = GS1Response
@@ -38,14 +39,14 @@ func SetGs1StatusAndResponse(itemCode string, GS1Status string, GS1Response stri
 		//DevMode().
 		R().
 		EnableDump().
-		SetResult(SapApiPostLoginResult{}).
+		SetSuccessResult(SapApiPostLoginResult{}).
 		SetHeader("Content-Type", "application/json").
 		SetBody(body).
 		Patch(fmt.Sprintf("Items('%v')", itemCode))
 	if err != nil {
 		return err
 	}
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		fmt.Printf("resp is err statusCode: %v. Dump: %v\n", resp.StatusCode, resp.Dump())
 		return resp.Err
 	}
