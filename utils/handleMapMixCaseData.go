@@ -49,7 +49,8 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 
 	shelfLifeAsInt := itemData.ShelfLifeFromArrivalInDays
 	if shelfLifeAsInt == 0 {
-		shelfLifeAsInt = int(float64(mixCaseData.ShelfLifeFromProductionInDays) * 0.75)
+		shelfLifeAsFloat := float64(itemData.ShelfLifeFromProductionInDays)
+		shelfLifeAsInt = int(shelfLifeAsFloat * 0.75)
 	}
 	mixCaseData.ShelfLifeFromArrivalInDays = shelfLifeAsInt
 

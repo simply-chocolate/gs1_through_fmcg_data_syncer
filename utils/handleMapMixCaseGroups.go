@@ -82,8 +82,6 @@ func MapMixCaseContent(
 	baseUnits []fmcg_api_wrapper.FMCGMixCaseContentBaseItem,
 ) ([]fmcg_api_wrapper.FMCGMixCaseContentBaseItem, error) {
 
-	fmt.Println("Mapping mixCase content. ItemCode:", itemData.ItemCode)
-
 	SapMixCaseContent, err := GetMixCaseItemsFromSap(itemData.ItemCode)
 	if err != nil {
 		fmt.Println("Couldn't get mix case contents from SAP. Sleeping 10 minutes")
@@ -95,8 +93,6 @@ func MapMixCaseContent(
 	}
 
 	hasError := false
-
-	fmt.Println("SapMixCaseContent:", SapMixCaseContent)
 
 	for _, contentItem := range SapMixCaseContent.Value {
 
@@ -136,8 +132,6 @@ func MapMixCaseContent(
 				baseUnit.UnitGTINItem = "0" + contentItemData.BarCodeForHF
 				baseUnit.UnitsPerCase = math.Floor(contentItem.Quantity * float64(itemData.UnitsPerCase))
 
-				fmt.Println("ItemCode:", itemData.ItemCode, "Baseunit has quantity:", baseUnit.UnitsPerCase)
-
 				baseUnits = append(baseUnits, baseUnit)
 			}
 
@@ -162,8 +156,6 @@ func MapMixCaseContent(
 					var baseUnit fmcg_api_wrapper.FMCGMixCaseContentBaseItem
 					baseUnit.UnitGTINItem = "0" + barcodeCollection.Barcode
 					baseUnit.UnitsPerCase = math.Floor(contentItem.Quantity)
-
-					fmt.Println("ItemCode:", itemData.ItemCode, "Baseunit has quantity:", baseUnit.UnitsPerCase)
 
 					baseUnits = append(baseUnits, baseUnit)
 
