@@ -53,12 +53,15 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 	baseItemData.TemperatureOUM = "CEL"
 
 	baseItemData.ShelfLifeFromProductionInDays = itemData.ShelfLifeFromProductionInDays
+
 	shelfLifeAsInt := itemData.ShelfLifeFromArrivalInDays
 	if shelfLifeAsInt == 0 {
 		shelfLifeAsInt = int(float64(baseItemData.ShelfLifeFromProductionInDays) * 0.75)
+	} else if shelfLifeAsInt > baseItemData.ShelfLifeFromProductionInDays {
+		shelfLifeAsInt = int(float64(baseItemData.ShelfLifeFromProductionInDays) * 0.75)
 	}
-	baseItemData.ShelfLifeFromArrivalInDays = shelfLifeAsInt
 
+	baseItemData.ShelfLifeFromArrivalInDays = shelfLifeAsInt
 	baseItemData.IsQuantityOrPriceVarying = false
 	baseItemData.DangerousContent = "FALSE"
 	baseItemData.RelevantForPriceComparison = "FALSE"

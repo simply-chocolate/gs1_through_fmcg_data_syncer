@@ -53,6 +53,8 @@ func MapCaseData(caseData fmcg_api_wrapper.FmcgProductBodyCase, itemData sap_api
 	shelfLifeAsInt := itemData.ShelfLifeFromArrivalInDays
 	if shelfLifeAsInt == 0 {
 		shelfLifeAsInt = int(float64(caseData.ShelfLifeFromProductionInDays) * 0.75)
+	} else if shelfLifeAsInt > caseData.ShelfLifeFromProductionInDays {
+		shelfLifeAsInt = int(float64(caseData.ShelfLifeFromProductionInDays) * 0.75)
 	}
 	caseData.ShelfLifeFromArrivalInDays = shelfLifeAsInt
 
