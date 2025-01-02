@@ -31,6 +31,8 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 	baseItemData.GPCCategoryCode = "10000045"
 	baseItemData.ImportClassificationValue = "18069019"
 	baseItemData.ImportClassificationType = "INTRASTAT"
+	baseItemData.TradeItemRegulationTypeCode = "DEFORESTATION_REGULATION"
+	baseItemData.RegulationComplianceIndicator = "TRUE"
 	baseItemData.TargetMarketCode = "208"
 	baseItemData.ItemCode = itemData.ItemCode
 
@@ -56,12 +58,15 @@ func MapBaseItemData(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseItem, item
 
 	shelfLifeAsInt := itemData.ShelfLifeFromArrivalInDays
 	if shelfLifeAsInt == 0 {
-		shelfLifeAsInt = int(float64(baseItemData.ShelfLifeFromProductionInDays) * 0.75)
-	} else if shelfLifeAsInt > baseItemData.ShelfLifeFromProductionInDays {
-		shelfLifeAsInt = int(float64(baseItemData.ShelfLifeFromProductionInDays) * 0.75)
+		shelfLifeAsInt = int(float64(itemData.ShelfLifeFromProductionInDays) * 0.75)
+	} else if shelfLifeAsInt > itemData.ShelfLifeFromProductionInDays {
+		shelfLifeAsInt = int(float64(itemData.ShelfLifeFromProductionInDays) * 0.75)
 	}
 
 	baseItemData.ShelfLifeFromArrivalInDays = shelfLifeAsInt
+	// fmt.Printf("CASE: ItemCode from BaseItem: %v\n", itemData.ItemCode)
+	// fmt.Printf("CASE: ShelfLife as Int: %v\n", baseItemData.ShelfLifeFromArrivalInDays)
+
 	baseItemData.IsQuantityOrPriceVarying = false
 	baseItemData.DangerousContent = "FALSE"
 	baseItemData.RelevantForPriceComparison = "FALSE"

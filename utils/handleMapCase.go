@@ -50,15 +50,19 @@ func MapCaseData(caseData fmcg_api_wrapper.FmcgProductBodyCase, itemData sap_api
 	caseData.TemperatureType = "STORAGE_HANDLING"
 	caseData.TemperatureOUM = "CEL"
 
+	// Shelf life
+	caseData.ShelfLifeFromProductionInDays = itemData.ShelfLifeFromProductionInDays
 	shelfLifeAsInt := itemData.ShelfLifeFromArrivalInDays
 	if shelfLifeAsInt == 0 {
-		shelfLifeAsInt = int(float64(caseData.ShelfLifeFromProductionInDays) * 0.75)
+		shelfLifeAsInt = int(float64(itemData.ShelfLifeFromProductionInDays) * 0.75)
 	} else if shelfLifeAsInt > caseData.ShelfLifeFromProductionInDays {
-		shelfLifeAsInt = int(float64(caseData.ShelfLifeFromProductionInDays) * 0.75)
+		shelfLifeAsInt = int(float64(itemData.ShelfLifeFromProductionInDays) * 0.75)
 	}
+
 	caseData.ShelfLifeFromArrivalInDays = shelfLifeAsInt
 
-	caseData.ShelfLifeFromProductionInDays = itemData.ShelfLifeFromProductionInDays
+	// fmt.Printf("CASE: ItemCode from BaseItem: %v\n", itemData.ItemCode)
+	// fmt.Printf("CASE: ShelfLife as Int: %v\n", caseData.ShelfLifeFromArrivalInDays)
 
 	// Logistical Information
 	caseData.UnitGTIN = baseItemGTIN

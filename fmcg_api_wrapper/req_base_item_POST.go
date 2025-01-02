@@ -9,14 +9,16 @@ type FmcgProductBodyBaseItem struct {
 	GTIN     string `json:"D8165"` // Barcode with 0 in front
 	DataType string `json:"D8164"` // [CORRECT, ...] // https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=DocumentCommandHeaderCode.da
 	//	General Information
-	DataCarrierTypeCode       string `json:"D8208"` // [EAN_13, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=DataCarrierTypeCodeList.da
-	BrandName                 string `json:"D8211"`
-	CountryOfOrigin           string `json:"D8219"`   // [208, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=CountryCodeList.da
-	ManufacturerGLN           string `json:"D8242_1"` //
-	BrandOwnerGLN             string `json:"D8346"`   //
-	GPCCategoryCode           string `json:"D8245"`   // 10000045
-	ImportClassificationValue string `json:"D8253_1"` // Default 18069019 for Chocolate
-	ImportClassificationType  string `json:"D8254_1"` // [INSTRASTAT, CUSTOMS_TARIFF_NUMBER...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=ImportClassificationTypeCodeList.da
+	DataCarrierTypeCode           string `json:"D8208"` // [EAN_13, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=DataCarrierTypeCodeList.da
+	BrandName                     string `json:"D8211"`
+	CountryOfOrigin               string `json:"D8219"`   // [208, ...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=CountryCodeList.da
+	ManufacturerGLN               string `json:"D8242_1"` //
+	BrandOwnerGLN                 string `json:"D8346"`   //
+	GPCCategoryCode               string `json:"D8245"`   // 10000045
+	ImportClassificationValue     string `json:"D8253_1"` // Default 18069019 for Chocolate
+	ImportClassificationType      string `json:"D8254_1"` // [INSTRASTAT, CUSTOMS_TARIFF_NUMBER...] - https://simplychocolate.fmcgproducts.dk/fmcg/pa/simplychocolate/pa.nsf/keyword.xsp?id=ImportClassificationTypeCodeList.da
+	TradeItemRegulationTypeCode   string `json:"D2603"`   // [DEFORESTATION_REGULATION...]
+	RegulationComplianceIndicator string `json:"D3074"`   // [TRUE, FALSE, NOT_APPLICABLE, UNSPECIFIED]
 
 	TargetMarketCode                    string `json:"D8255"` // Default 208 for DK
 	ItemCode                            string `json:"D8256"`
