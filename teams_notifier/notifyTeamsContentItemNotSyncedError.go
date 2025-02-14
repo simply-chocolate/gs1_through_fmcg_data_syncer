@@ -22,7 +22,7 @@ func SendContentItemNotSyncedErrorToTeams(ItemCodeFV string, ItemCodeHF string, 
 		"The FV that the Barcode in the SAP field 'EAN nummer (Stk) on the HF references, has not yet been synced to SAP'<BR/>", ItemCodeFV, ItemCodeHF, BarcodeForHF, GS1StatusContentITem)
 
 	if err := client.Send(webhook, card); err != nil {
-		return fmt.Errorf("SendContentNotSyncedErrorToTeams failed to send the error. Error: %v", err)
+		return fmt.Errorf("SendContentNotSyncedErrorToTeams failed to send the error. Error: %v\n", err)
 	}
 	return nil
 }

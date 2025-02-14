@@ -13,6 +13,7 @@ func IterateProductsAndMapToFMCGFormat(
 	var mixDisplays []sap_api_wrapper.SapApiItemsData
 
 	for _, itemData := range SapItemsData.Value {
+
 		var UnitGTIN string
 		var err error
 

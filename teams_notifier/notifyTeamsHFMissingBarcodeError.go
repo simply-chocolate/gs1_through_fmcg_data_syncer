@@ -20,7 +20,7 @@ func SendHFMissingBarcodeErrorToTeams(ItemCodeFV string, ItemCodeHF string) erro
 		"The HF item is missing a barcode in the SAP field 'EAN nummer (Stk)'<BR/>", ItemCodeFV, ItemCodeHF)
 
 	if err := client.Send(webhook, card); err != nil {
-		return fmt.Errorf("SendHFMissingBarcodeErrorToTeams failed to send the error. Error: %v", err)
+		return fmt.Errorf("SendHFMissingBarcodeErrorToTeams failed to send the error. Error: %v\n", err)
 	}
 	return nil
 }

@@ -58,7 +58,7 @@ func MapMixCaseData(mixCaseData fmcg_api_wrapper.FmcgProductBodyMixCase, itemDat
 
 	// Logistical Information
 
-	mixCaseData.PackagingType = itemData.PackagingType
+	mixCaseData.PackagingType = MapPackagingType(itemData.PackagingType)
 	mixCaseData = MapLogisticalInformationMixCase(mixCaseData, itemData)
 
 	// Dates

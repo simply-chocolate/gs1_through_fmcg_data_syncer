@@ -67,7 +67,7 @@ func MapCaseData(caseData fmcg_api_wrapper.FmcgProductBodyCase, itemData sap_api
 	// Logistical Information
 	caseData.UnitGTIN = baseItemGTIN
 	caseData.UnitsPerCase = itemData.UnitsPerCase
-	caseData.PackagingType = itemData.PackagingType
+	caseData.PackagingType = MapPackagingType(itemData.PackagingType)
 	caseData = MapLogisticalInformationCase(caseData, itemData)
 
 	// Dates

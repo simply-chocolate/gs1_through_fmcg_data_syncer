@@ -140,7 +140,7 @@ func MapLogisticalInformation(baseItemData fmcg_api_wrapper.FmcgProductBodyBaseI
 	baseItemData.NetWeightUoM = "GRM"
 	baseItemData.GrossWeight = itemData.BaseUnitGrossWeight
 	baseItemData.GrossWeightUoM = "GRM"
-	baseItemData.PackagingType = itemData.PackagingType
+	baseItemData.PackagingType = MapPackagingType(itemData.PackagingType)
 
 	return baseItemData
 }
