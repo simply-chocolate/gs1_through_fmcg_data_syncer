@@ -20,6 +20,7 @@ func SendProductStatusErrorToTeams(GTIN string, errorPlace string, errorMessage 
 		"**Error Message**: %s<BR/>", GTIN, errorPlace, errorMessage)
 
 	if err := client.Send(webhook, card); err != nil {
+		fmt.Printf("GTIN: %v  ErrorPlace: %s ErrorMessage: %s\n", GTIN, errorPlace, errorMessage)
 		return fmt.Errorf("SendValidationErrorToTeams failed to send the error. Error: %v\n", err)
 	}
 	return nil

@@ -22,5 +22,6 @@ func SendRequestsReturnErrorToTeams(requestName string, requestType string, resp
 
 	if err := client.Send(webhook, card); err != nil {
 		fmt.Println("SendVatCodeErrorToTeams failed to send the error.")
+		fmt.Printf("RequestName: %s  RequestType: %s Response: %s ResponseBody: %s API: %s\n", requestName, requestType, response, responseBody, api)
 	}
 }

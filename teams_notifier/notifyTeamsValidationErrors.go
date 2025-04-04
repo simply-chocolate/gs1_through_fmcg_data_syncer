@@ -23,6 +23,7 @@ func SendValidationErrorToTeams(ItemCode string, GTIN string, fieldId string, fi
 		"**Message Type** %s <BR/>", ItemCode, GTIN, fieldId, fieldLabel, message, messageType)
 
 	if err := client.Send(webhook, card); err != nil {
+		fmt.Printf("Itemcode: %v  GTIN %v FieldId: %s FieldLabel: %s Message: %s MessageType: %s\n", ItemCode, GTIN, fieldId, fieldLabel, message, messageType)
 		return fmt.Errorf("SendValidationErrorToTeams failed to send the error. Error: %v\n", err)
 	}
 	return nil
